@@ -101,13 +101,13 @@ public class GameController extends InputAdapter {
 
 			switch (mode) {
 			case EASY:
-				// 出現後、停止
+				// 蜃ｺ迴ｾ蠕後∝●豁｢
 				break;
 			case NORMAL:
-				// 出現後、上下にゆれる
+				// 蜃ｺ迴ｾ蠕後∽ｸ贋ｸ九↓繧�繧後ｋ
 				break;
 			case HARD:
-				// 出現後、回転
+				// 蜃ｺ迴ｾ蠕後∝屓霆｢
 				break;
 			}
 
@@ -119,10 +119,10 @@ public class GameController extends InputAdapter {
 
 		switch (mode) {
 		case EASY:
-			// 出現後、停止
+			// 蜃ｺ迴ｾ蠕後∝●豁｢
 			break;
 		case NORMAL:
-			// 出現後、上下にゆれる
+			// 蜃ｺ迴ｾ蠕後∽ｸ贋ｸ九↓繧�繧後ｋ
 			main = Timeline.createSequence()
 			//
 					.push(Tween.set(dragonGame, GameObjectAccessor.MOVE_SIZE_ALPHA).target(5.0f, 7.5f, 10.0f, 15.0f, 1.0f)) //
@@ -132,7 +132,7 @@ public class GameController extends InputAdapter {
 					.repeat(-1, 0.0f); //
 			break;
 		case HARD:
-			// 出現後、回転
+			// 蜃ｺ迴ｾ蠕後∝屓霆｢
 			dragonGame.getSprite().setOrigin(5.0f, 7.5f);
 			main = Timeline.createSequence()
 			//

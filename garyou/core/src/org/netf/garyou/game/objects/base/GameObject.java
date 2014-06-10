@@ -9,13 +9,13 @@ public class GameObject {
 	public boolean focused;
 
 	/**
-	 * ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	 * ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	 *
-	 * @param x ’†SXÀ•W
-	 * @param y ’†SYÀ•W
-	 * @param width •
-	 * @param height ‚‚³
-	 * @param a “§‰ß
+	 * @param x ä¸­å¿ƒXåº§æ¨™
+	 * @param y ä¸­å¿ƒYåº§æ¨™
+	 * @param width å¹…
+	 * @param height é«˜ã•
+	 * @param a é€é
 	 */
 	public GameObject(Sprite sprite, float x, float y, float width, float height, float a) {
 		this.sprite = sprite;
@@ -28,10 +28,10 @@ public class GameObject {
 	}
 
 	/**
-	 * À•Wİ’è
+	 * åº§æ¨™è¨­å®š
 	 *
-	 * @param x ’†SXÀ•W
-	 * @param y ’†SYÀ•W
+	 * @param x ä¸­å¿ƒXåº§æ¨™
+	 * @param y ä¸­å¿ƒYåº§æ¨™
 	 */
 	public void setCenterPosition(float x, float y) {
 		Rectangle rectangle = sprite.getBoundingRectangle();
@@ -39,10 +39,10 @@ public class GameObject {
 	}
 
 	/**
-	 * ƒTƒCƒYİ’è
+	 * ã‚µã‚¤ã‚ºè¨­å®š
 	 *
-	 * @param width •
-	 * @param height ‚‚³
+	 * @param width å¹…
+	 * @param height é«˜ã•
 	 */
 	public void setSize(float width, float height) {
 		Rectangle rectangle = sprite.getBoundingRectangle();
@@ -50,7 +50,7 @@ public class GameObject {
 	}
 
 	/**
-	 * “–‚½‚è”»’è
+	 * å½“ãŸã‚Šåˆ¤å®š
 	 *
 	 * @return
 	 */

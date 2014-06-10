@@ -1,6 +1,7 @@
 package org.netf.garyou.screens;
 
 import org.netf.garyou.game.MenuController;
+import org.netf.garyou.game.MenuController.STATE;
 import org.netf.garyou.game.MenuRenderer;
 import org.netf.garyou.util.Constants;
 
@@ -50,7 +51,7 @@ public class MenuScreen extends AbstractGameScreen implements InputProcessor {
 
 	@Override
 	public void show() {
-		menuController = new MenuController(game);
+		menuController = new MenuController();
 		menuRenderer = new MenuRenderer(menuController);
 		Gdx.input.setInputProcessor(this);
 	}
@@ -65,47 +66,63 @@ public class MenuScreen extends AbstractGameScreen implements InputProcessor {
 	}
 
 	@Override
-	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 
-		touchPoint.set(screenX, screenY, 0);
-		camera.unproject(touchPoint);
+		if (menuController.state == STATE.MAIN) {
 
-		if (menuController.easy.isHit(touchPoint.x, touchPoint.y)) {
-			game.setScreen(new GameScreen(game, GameScreen.MODE.EASY));
-		} else if (menuController.normal.isHit(touchPoint.x, touchPoint.y)) {
-			game.setScreen(new GameScreen(game, GameScreen.MODE.NORMAL));
-		} else if (menuController.hard.isHit(touchPoint.x, touchPoint.y)) {
-			game.setScreen(new GameScreen(game, GameScreen.MODE.HARD));
+			touchPoint.set(screenX, screenY, 0);
+			camera.unproject(touchPoint);
+
+			if (menuController.easy.isHit(touchPoint.x, touchPoint.y)) {
+				game.setScreen(new GameScreen(game, GameScreen.MODE.EASY));
+			} else if (menuController.normal.isHit(touchPoint.x, touchPoint.y)) {
+				game.setScreen(new GameScreen(game, GameScreen.MODE.NORMAL));
+			} else if (menuController.hard.isHit(touchPoint.x, touchPoint.y)) {
+				game.setScreen(new GameScreen(game, GameScreen.MODE.HARD));
+			}
 		}
 
 		return true;
 	}
 
 	@Override
-	public boolean mouseMoved(int screenX, int screenY) {
-
-		touchPoint.set(screenX, screenY, 0);
-		camera.unproject(touchPoint);
-
-		if (menuController.easy.isHit(touchPoint.x, touchPoint.y)) {
-			menuController.easy.focused = true;
-		} else {
-			menuController.easy.focused = false;
-		}
-
-		if (menuController.normal.isHit(touchPoint.x, touchPoint.y)) {
-			menuController.normal.focused = true;
-		} else {
-			menuController.normal.focused = false;
-		}
-
-		if (menuController.hard.isHit(touchPoint.x, touchPoint.y)) {
-			menuController.hard.focused = true;
-		} else {
-			menuController.hard.focused = false;
-		}
-
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		focus(screenX, screenY);
 		return true;
+	}
+
+	@Override
+	public boolean mouseMoved(int screenX, int screenY) {
+		focus(screenX, screenY);
+		return true;
+	}
+
+	private void focus(int screenX, int screenY) {
+
+		if (menuController.state == STATE.MAIN) {
+
+			touchPoint.set(screenX, screenY, 0);
+			camera.unproject(touchPoint);
+
+			if (menuController.easy.isHit(touchPoint.x, touchPoint.y)) {
+				menuController.easy.focused = true;
+			} else {
+				menuController.easy.focused = false;
+			}
+
+			if (menuController.normal.isHit(touchPoint.x, touchPoint.y)) {
+				menuController.normal.focused = true;
+			} else {
+				menuController.normal.focused = false;
+			}
+
+			if (menuController.hard.isHit(touchPoint.x, touchPoint.y)) {
+				menuController.hard.focused = true;
+			} else {
+				menuController.hard.focused = false;
+			}
+		}
+
 	}
 
 }

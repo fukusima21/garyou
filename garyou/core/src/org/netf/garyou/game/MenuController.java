@@ -3,12 +3,12 @@ package org.netf.garyou.game;
 import org.netf.garyou.accessors.GameObjectAccessor;
 import org.netf.garyou.game.objects.base.GameObject;
 
+import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenManager;
 import aurelienribon.tweenengine.equations.Cubic;
-
-import com.badlogic.gdx.Game;
 
 public class MenuController {
 
@@ -23,16 +23,21 @@ public class MenuController {
 	public GameObject hard;
 	public GameObject circle;
 
-	private Game game;
-
 	private TweenManager tweenManager;
 
-	public MenuController(Game game) {
-		this.game = game;
+	public static enum STATE {
+		READY, MAIN
+	}
+
+	public STATE state;
+
+	public MenuController() {
 		init();
 	}
 
 	private void init() {
+
+		state = STATE.READY;
 
 		moon = new GameObject(Assets.instance.moon, 7.0f, 11.5f, 4.0f, 4.0f, 1.0f);
 		ga = new GameObject(Assets.instance.ga, 2.0f, 1.5f, 2.0f, 2.0f, 0.0f);
@@ -51,7 +56,7 @@ public class MenuController {
 
 		Tween.registerAccessor(GameObject.class, new GameObjectAccessor());
 
-		Timeline.createSequence() //
+		Timeline ready = Timeline.createSequence() //
 				.push(Tween.set(ga, GameObjectAccessor.SIZE_ALPHA).target(16.0f, 16.0f, 0.3f)) //
 				.push(Tween.set(ryou, GameObjectAccessor.SIZE_ALPHA).target(16.0f, 16.0f, 0.3f)) //
 				.push(Tween.set(ten, GameObjectAccessor.SIZE_ALPHA).target(16.0f, 16.0f, 0.3f)) //
@@ -70,6 +75,17 @@ public class MenuController {
 				.push(Tween.to(hard, GameObjectAccessor.SIZE_ALPHA, 0.2f).target(4.0f, 4.0f, 0.8f).ease(Cubic.INOUT)) //
 				.delay(0.5f).repeat(-1, 60.0f) //
 				.start(tweenManager);
+
+		ready.setCallback(new TweenCallback() {
+			@Override
+			public void onEvent(int type, BaseTween<?> source) {
+				if (type == TweenCallback.START) {
+					state = STATE.READY;
+				} else if (type == TweenCallback.END) {
+					state = STATE.MAIN;
+				}
+			}
+		}).setCallbackTriggers(TweenCallback.END | TweenCallback.START);
 
 	}
 
