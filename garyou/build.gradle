@@ -97,3 +97,7 @@ project(":core") {
 tasks.eclipse.doLast {
     delete ".project"
 }
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
