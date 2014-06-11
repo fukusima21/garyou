@@ -5,8 +5,8 @@ import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetErrorListener;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -29,14 +29,19 @@ public class Assets implements Disposable, AssetErrorListener {
 	public Sprite easy;
 	public Sprite normal;
 	public Sprite hard;
-	public Sprite one;
-	public Sprite two;
-	public Sprite three;
 	public Sprite dragonGame;
-	public Sprite eye;
-	private Texture eyeTexture;
+
 	public Sprite circle;
-	private Texture circleTxture;
+	private Texture circleTexture;
+
+	public Sprite back1;
+	private Texture back1Texture;
+
+	public Sprite back2;
+	private Texture back2Texture;
+
+	public Sprite back3;
+	private Texture back3Texture;
 
 	private Assets() {
 	}
@@ -73,25 +78,35 @@ public class Assets implements Disposable, AssetErrorListener {
 		normal = atlas.createSprite("normal");
 		hard = atlas.createSprite("hard");
 
-		three = atlas.createSprite("three");
-		two = atlas.createSprite("two");
-		one = atlas.createSprite("one");
-
 		dragonGame = atlas.createSprite("dragon_game");
-
-		Pixmap eyePixmap = new Pixmap(30, 30, Format.RGBA8888);
-		eyePixmap.setColor(1.0f, 0.0f, 0.0f, 1.0f);
-		eyePixmap.fillCircle(15, 15, 14);
-		eyeTexture = new Texture(eyePixmap);
-		eye = new Sprite(eyeTexture);
-		eyePixmap.dispose();
 
 		Pixmap circlePixmap = new Pixmap(128, 128, Format.RGBA8888);
 		circlePixmap.setColor(1.0f, 1.0f, 1.0f, 1.0f);
 		circlePixmap.fillCircle(63, 63, 63);
-		circleTxture = new Texture(circlePixmap);
-		circle = new Sprite(circleTxture);
+		circleTexture = new Texture(circlePixmap);
+		circle = new Sprite(circleTexture);
 		circlePixmap.dispose();
+
+		Pixmap back1Pixmap = new Pixmap(16, 16, Format.RGB565);
+		back1Pixmap.setColor(0x90 / 255.0f, 0xD7 / 255.0f, 0xEC / 255.0f, 0xff / 255.0f);
+		back1Pixmap.fillRectangle(0, 0, 16, 16);
+		back1Texture = new Texture(back1Pixmap);
+		back1 = new Sprite(back1Texture);
+		back1Pixmap.dispose();
+
+		Pixmap back2Pixmap = new Pixmap(16, 16, Format.RGB565);
+		back2Pixmap.setColor(128 / 255.0f, 133 / 255.0f, 152 / 255.0f, 0xff / 255.0f);
+		back2Pixmap.fillRectangle(0, 0, 16, 16);
+		back2Texture = new Texture(back2Pixmap);
+		back2 = new Sprite(back2Texture);
+		back2Pixmap.dispose();
+
+		Pixmap back3Pixmap = new Pixmap(16, 16, Format.RGB565);
+		back3Pixmap.setColor(52 / 255.0f, 12 / 255.0f, 129 / 255.0f, 0xff / 255.0f);
+		back3Pixmap.fillRectangle(0, 0, 16, 16);
+		back3Texture = new Texture(back3Pixmap);
+		back3 = new Sprite(back3Texture);
+		back3Pixmap.dispose();
 
 	}
 
@@ -103,8 +118,10 @@ public class Assets implements Disposable, AssetErrorListener {
 	@Override
 	public void dispose() {
 		assetManager.dispose();
-		eyeTexture.dispose();
-		circleTxture.dispose();
+		circleTexture.dispose();
+		back1Texture.dispose();
+		back2Texture.dispose();
+		back3Texture.dispose();
 	}
 
 }

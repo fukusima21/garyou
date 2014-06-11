@@ -88,14 +88,17 @@ public class GameRenderer implements Disposable {
 	}
 
 	private void renderReady() {
-		gameController.one.getSprite().draw(batch);
-		gameController.two.getSprite().draw(batch);
-		gameController.three.getSprite().draw(batch);
+		gameController.back.getSprite().draw(batch);
+		gameController.moon.getSprite().draw(batch);
+//		gameController.one.getSprite().draw(batch);
+//		gameController.two.getSprite().draw(batch);
+//		gameController.three.getSprite().draw(batch);
 		gameController.dragonGame.getSprite().draw(batch);
 	}
 
 	private void renderMain() {
-		gameController.eye.getSprite().draw(batch);
+		gameController.back.getSprite().draw(batch);
+		gameController.moon.getSprite().draw(batch);
 		gameController.dragonGame.getSprite().draw(batch);
 
 	}

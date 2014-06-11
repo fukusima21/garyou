@@ -1,96 +1,75 @@
 
 garyou.png
-size: 1018,486
+size: 1018,482
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
 dragon_game
   rotate: false
-  xy: 2, 6
+  xy: 2, 2
   size: 320, 480
   orig: 320, 480
   offset: 0, 0
   index: -1
 dragon_title
   rotate: false
-  xy: 324, 326
+  xy: 324, 322
   size: 240, 160
   orig: 240, 160
   offset: 0, 0
   index: -1
 easy
   rotate: false
-  xy: 890, 358
+  xy: 324, 30
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 ga
   rotate: false
-  xy: 324, 164
+  xy: 324, 160
   size: 160, 160
   orig: 160, 160
   offset: 0, 0
   index: -1
 hard
   rotate: false
-  xy: 648, 34
+  xy: 648, 192
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 moon
   rotate: false
-  xy: 778, 42
+  xy: 454, 38
   size: 120, 120
   orig: 120, 120
   offset: 0, 0
   index: -1
 normal
   rotate: false
-  xy: 810, 196
+  xy: 890, 354
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
-one
-  rotate: false
-  xy: 566, 326
-  size: 160, 160
-  orig: 160, 160
-  offset: 0, 0
-  index: -1
 ryou
   rotate: false
-  xy: 486, 164
+  xy: 566, 322
   size: 160, 160
   orig: 160, 160
   offset: 0, 0
   index: -1
 sei
   rotate: false
-  xy: 728, 326
+  xy: 486, 160
   size: 160, 160
   orig: 160, 160
   offset: 0, 0
   index: -1
 ten
   rotate: false
-  xy: 648, 164
-  size: 160, 160
-  orig: 160, 160
-  offset: 0, 0
-  index: -1
-three
-  rotate: false
-  xy: 324, 2
-  size: 160, 160
-  orig: 160, 160
-  offset: 0, 0
-  index: -1
-two
-  rotate: false
-  xy: 486, 2
+  xy: 728, 322
   size: 160, 160
   orig: 160, 160
   offset: 0, 0

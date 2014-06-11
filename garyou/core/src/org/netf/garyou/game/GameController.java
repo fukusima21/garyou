@@ -9,6 +9,8 @@ import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenManager;
+import aurelienribon.tweenengine.equations.Cubic;
+import aurelienribon.tweenengine.equations.Quad;
 import aurelienribon.tweenengine.equations.Sine;
 
 import com.badlogic.gdx.InputAdapter;
@@ -20,11 +22,9 @@ public class GameController extends InputAdapter {
 
 	private TweenManager tweenManager;
 
-	public GameObject one;
-	public GameObject two;
-	public GameObject three;
 	public GameObject dragonGame;
-	public GameObject eye;
+	public GameObject moon;
+	public GameObject back;
 	public float timer;
 
 	public static enum STATE {
@@ -48,26 +48,33 @@ public class GameController extends InputAdapter {
 
 		state = STATE.READY;
 
-		one = new GameObject(Assets.instance.one, 5.0f, 7.5f, 5.0f, 5.0f, 0.0f);
-		two = new GameObject(Assets.instance.two, 5.0f, 7.5f, 5.0f, 5.0f, 0.0f);
-		three = new GameObject(Assets.instance.three, 5.0f, 7.5f, 5.0f, 5.0f, 0.0f);
 		dragonGame = new GameObject(Assets.instance.dragonGame, 5.0f, 15.0f, 10.0f, 15.0f, 0.0f);
-		eye = new GameObject(Assets.instance.eye, 7.3f, 12.4f, 0.5f, 0.5f, 0.6f);
+		moon = new GameObject(Assets.instance.moon, 7.0f, 11.5f, 4.0f, 4.0f, 1.0f);
+
+		switch (mode) {
+		case EASY:
+			back = new GameObject(Assets.instance.back1, 15.0f, 7.5f, 10.0f, 15.0f, 1.0f);
+			break;
+		case NORMAL:
+			back = new GameObject(Assets.instance.back2, 15.0f, 7.5f, 10.0f, 15.0f, 1.0f);
+			break;
+		case HARD:
+			back = new GameObject(Assets.instance.back3, 15.0f, 7.5f, 10.0f, 15.0f, 1.0f);
+			break;
+		}
 
 		tweenManager = new TweenManager();
 
 		Tween.registerAccessor(GameObject.class, new GameObjectAccessor());
 		Tween.setCombinedAttributesLimit(5);
 
-		ready = Timeline.createSequence()
-		//
-				.push(Tween.set(three, GameObjectAccessor.SIZE_ALPHA).target(30.0f, 30.0f, 1.0f)) //
-				.push(Tween.to(three, GameObjectAccessor.SIZE_ALPHA, 1.0f).target(2.0f, 2.0f, 0.0f).ease(Sine.INOUT)) //
-				.push(Tween.set(two, GameObjectAccessor.SIZE_ALPHA).target(30.0f, 30.0f, 1.0f)) //
-				.push(Tween.to(two, GameObjectAccessor.SIZE_ALPHA, 1.0f).target(2.0f, 2.0f, 0.0f).ease(Sine.INOUT)) //
-				.push(Tween.set(one, GameObjectAccessor.SIZE_ALPHA).target(30.0f, 30.0f, 1.0f)) //
-				.push(Tween.to(one, GameObjectAccessor.SIZE_ALPHA, 1.0f).target(2.0f, 2.0f, 0.0f).ease(Sine.INOUT))
-				//
+		ready = Timeline.createSequence() //
+				.push(Tween.set(back, GameObjectAccessor.MOVE).target(15.0f, 7.5f)) //
+				.push(Tween.set(moon, GameObjectAccessor.MOVE_SIZE).target(7.0f, 11.5f, 4.0f, 4.0f)) //
+				.beginParallel() //
+				.push(Tween.to(back, GameObjectAccessor.MOVE, 0.5f).target(5.0f, 7.5f).ease(Cubic.IN)) //
+				.push(Tween.to(moon, GameObjectAccessor.MOVE_SIZE, 0.5f).target(7.3f, 12.4f, 0.5f, 0.5f).ease(Quad.IN)) //
+				.end() //
 				.push(Tween.set(dragonGame, GameObjectAccessor.MOVE_SIZE_ALPHA).target(5.0f, -30.0f, 20.0f, 30.0f, 0.5f)) //
 				.push(Tween.to(dragonGame, GameObjectAccessor.MOVE_SIZE_ALPHA, 1.0f).target(5.0f, 7.5f, 20.0f, 30.0f, 0.8f).ease(Sine.INOUT)) //
 				.push(Tween.to(dragonGame, GameObjectAccessor.MOVE_SIZE_ALPHA, 1.0f).target(5.0f, 7.5f, 10.0f, 15.0f, 1.0f).ease(Sine.INOUT)) //
@@ -119,25 +126,28 @@ public class GameController extends InputAdapter {
 
 		switch (mode) {
 		case EASY:
-			// 出現後、停止
-			break;
-		case NORMAL:
 			// 出現後、上下にゆれる
-			main = Timeline.createSequence()
-			//
+			main = Timeline.createSequence() //
 					.push(Tween.set(dragonGame, GameObjectAccessor.MOVE_SIZE_ALPHA).target(5.0f, 7.5f, 10.0f, 15.0f, 1.0f)) //
 					.push(Tween.to(dragonGame, GameObjectAccessor.MOVE_SIZE_ALPHA, 1.0f).target(5.0f, 2.5f, 10.0f, 15.0f, 1.0f).ease(Sine.INOUT)) //
 					.push(Tween.to(dragonGame, GameObjectAccessor.MOVE_SIZE_ALPHA, 1.0f).target(5.0f, 12.5f, 10.0f, 15.0f, 1.0f).ease(Sine.INOUT)) //
 					.push(Tween.to(dragonGame, GameObjectAccessor.MOVE_SIZE_ALPHA, 1.0f).target(5.0f, 7.5f, 10.0f, 15.0f, 1.0f).ease(Sine.INOUT)) //
 					.repeat(-1, 0.0f); //
 			break;
+		case NORMAL:
+			// 出現後、左右にゆれる
+			main = Timeline.createSequence() //
+					.push(Tween.set(dragonGame, GameObjectAccessor.MOVE_SIZE_ALPHA).target(5.0f, 7.5f, 10.0f, 15.0f, 1.0f)) //
+					.push(Tween.to(dragonGame, GameObjectAccessor.MOVE_SIZE_ALPHA, 0.7f).target(0.0f, 7.5f, 10.0f, 15.0f, 1.0f).ease(Sine.INOUT)) //
+					.push(Tween.to(dragonGame, GameObjectAccessor.MOVE_SIZE_ALPHA, 0.7f).target(10.0f, 7.5f, 10.0f, 15.0f, 1.0f).ease(Sine.INOUT)) //
+					.push(Tween.to(dragonGame, GameObjectAccessor.MOVE_SIZE_ALPHA, 0.7f).target(5.0f, 7.5f, 10.0f, 15.0f, 1.0f).ease(Sine.INOUT)) //
+					.repeat(-1, 0.0f); //
+			break;
 		case HARD:
 			// 出現後、回転
 			dragonGame.getSprite().setOrigin(5.0f, 7.5f);
-			main = Timeline.createSequence()
-			//
-					.push(Tween.set(dragonGame, GameObjectAccessor.MOVE_SIZE_ALPHA).target(5.0f, 7.5f, 10.0f, 15.0f, 1.0f))
-					//
+			main = Timeline.createSequence() //
+					.push(Tween.set(dragonGame, GameObjectAccessor.MOVE_SIZE_ALPHA).target(5.0f, 7.5f, 10.0f, 15.0f, 1.0f)) //
 					.push(Tween.set(dragonGame, GameObjectAccessor.ROTATE).target(360.0f)) //
 					.push(Tween.to(dragonGame, GameObjectAccessor.ROTATE, 2.0f).target(0.0f).ease(Sine.INOUT)) //
 					.repeatYoyo(-1, 0.0f); //
