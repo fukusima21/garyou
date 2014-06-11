@@ -46,10 +46,6 @@ public class MenuScreen extends AbstractGameScreen implements InputProcessor {
 	}
 
 	@Override
-	public void resize(int width, int height) {
-	}
-
-	@Override
 	public void show() {
 		menuController = new MenuController();
 		menuRenderer = new MenuRenderer(menuController);
@@ -59,10 +55,6 @@ public class MenuScreen extends AbstractGameScreen implements InputProcessor {
 	@Override
 	public void hide() {
 		menuRenderer.dispose();
-	}
-
-	@Override
-	public void pause() {
 	}
 
 	@Override

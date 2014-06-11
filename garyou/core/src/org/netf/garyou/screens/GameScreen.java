@@ -32,10 +32,8 @@ public class GameScreen extends AbstractGameScreen {
 
 		touchPoint = new Vector3();
 
-		camera = new OrthographicCamera(Constants.VIEWPORT_WIDTH,
-				Constants.VIEWPORT_HEIGHT);
-		camera.position.set(Constants.VIEWPORT_WIDTH / 2,
-				Constants.VIEWPORT_HEIGHT / 2, 0);
+		camera = new OrthographicCamera(Constants.VIEWPORT_WIDTH, Constants.VIEWPORT_HEIGHT);
+		camera.position.set(Constants.VIEWPORT_WIDTH / 2, Constants.VIEWPORT_HEIGHT / 2, 0);
 		camera.update();
 	}
 
@@ -44,16 +42,10 @@ public class GameScreen extends AbstractGameScreen {
 
 		gameController.update(deltaTime);
 
-		Gdx.gl.glClearColor(0xe7 / 255.0f, 0xe3 / 255.0f, 0xc8 / 255.0f,
-				0xff / 255.0f);
+		Gdx.gl.glClearColor(0xe7 / 255.0f, 0xe3 / 255.0f, 0xc8 / 255.0f, 0xff / 255.0f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		gameRenderer.render();
-
-	}
-
-	@Override
-	public void resize(int width, int height) {
 
 	}
 
@@ -67,10 +59,6 @@ public class GameScreen extends AbstractGameScreen {
 	@Override
 	public void hide() {
 		gameRenderer.dispose();
-	}
-
-	@Override
-	public void pause() {
 	}
 
 }

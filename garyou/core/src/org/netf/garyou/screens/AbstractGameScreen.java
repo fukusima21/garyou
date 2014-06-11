@@ -17,16 +17,19 @@ public abstract class AbstractGameScreen implements Screen, InputProcessor {
 
 	public abstract void render(float deltaTime);
 
-	public abstract void resize(int width, int height);
+	public void resize(int width, int height) {
+	}
 
 	public abstract void show();
 
 	public abstract void hide();
 
-	public abstract void pause();
-
 	public void resume() {
 		Assets.instance.init(new AssetManager());
+	}
+
+	@Override
+	public void pause() {
 	}
 
 	public void dispose() {

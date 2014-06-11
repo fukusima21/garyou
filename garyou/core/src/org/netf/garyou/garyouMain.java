@@ -17,13 +17,11 @@ public class garyouMain extends Game {
 	@Override
 	public void pause() {
 		super.pause();
-		Assets.instance.dispose();
 	}
 
 	@Override
 	public void resume() {
 		super.resume();
-		Assets.instance.init(new AssetManager());
 	}
 
 	@Override
