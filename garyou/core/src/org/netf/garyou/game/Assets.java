@@ -102,7 +102,7 @@ public class Assets implements Disposable, AssetErrorListener {
 		back2Pixmap.dispose();
 
 		Pixmap back3Pixmap = new Pixmap(16, 16, Format.RGB565);
-		back3Pixmap.setColor(52 / 255.0f, 12 / 255.0f, 129 / 255.0f, 0xff / 255.0f);
+		back3Pixmap.setColor(86 / 255.0f, 0 / 255.0f, 125 / 255.0f, 0xff / 255.0f);
 		back3Pixmap.fillRectangle(0, 0, 16, 16);
 		back3Texture = new Texture(back3Pixmap);
 		back3 = new Sprite(back3Texture);

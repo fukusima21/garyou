@@ -2,12 +2,15 @@ package org.netf.garyou.screens;
 
 import org.netf.garyou.game.GameController;
 import org.netf.garyou.game.GameRenderer;
+import org.netf.garyou.game.GameController.STATE;
 import org.netf.garyou.util.Constants;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 
 public class GameScreen extends AbstractGameScreen {
@@ -59,6 +62,40 @@ public class GameScreen extends AbstractGameScreen {
 	@Override
 	public void hide() {
 		gameRenderer.dispose();
+	}
+
+	@Override
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+
+		if (gameController.state == STATE.MAIN) {
+			touchPoint.set(screenX, screenY, 0);
+			camera.unproject(touchPoint);
+			gameController.touch = touchPoint;
+		}
+
+		return true;
+	}
+
+	@Override
+	public boolean touchDragged(int screenX, int screenY, int pointer) {
+
+		if (gameController.state == STATE.MAIN) {
+			touchPoint.set(screenX, screenY, 0);
+			camera.unproject(touchPoint);
+			gameController.touch = touchPoint;
+		}
+
+		return true;
+	}
+
+	@Override
+	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+
+		if (gameController.state == STATE.MAIN) {
+			gameController.touch = null;
+		}
+
+		return true;
 	}
 
 }

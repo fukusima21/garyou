@@ -18,7 +18,7 @@ import com.badlogic.gdx.math.Vector3;
 
 public class GameController extends InputAdapter {
 
-	public Vector3 pos;
+	public Vector3 touch;
 
 	private TweenManager tweenManager;
 
@@ -47,6 +47,8 @@ public class GameController extends InputAdapter {
 	private void init() {
 
 		state = STATE.READY;
+
+		touch = null;
 
 		dragonGame = new GameObject(Assets.instance.dragonGame, 5.0f, 15.0f, 10.0f, 15.0f, 0.0f);
 		moon = new GameObject(Assets.instance.moon, 7.0f, 11.5f, 4.0f, 4.0f, 1.0f);
