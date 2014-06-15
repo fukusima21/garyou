@@ -44,7 +44,7 @@ public class MenuController {
 		ryou = new GameObject(Assets.instance.ryou, 4.0f, 1.5f, 2.0f, 2.0f, 0.0f);
 		ten = new GameObject(Assets.instance.ten, 6.0f, 1.5f, 2.0f, 2.0f, 0.0f);
 		sei = new GameObject(Assets.instance.sei, 8.0f, 1.5f, 2.0f, 2.0f, 0.0f);
-		dragon = new GameObject(Assets.instance.dragonTitle, 5.0f, 5.75f, 10.0f, 7.5f, 0.0f);
+		dragon = new GameObject(Assets.instance.dragonTitle, 5.0f, 7.5f, 5.0f, 7.5f, 0.0f);
 
 		easy = new GameObject(Assets.instance.easy, 2.5f, 10.0f, 4.0f, 4.0f, 0.0f);
 		normal = new GameObject(Assets.instance.normal, 5.0f, 13.5f, 4.0f, 4.0f, 0.0f);
@@ -55,13 +55,14 @@ public class MenuController {
 		tweenManager = new TweenManager();
 
 		Tween.registerAccessor(GameObject.class, new GameObjectAccessor());
+		Tween.setCombinedAttributesLimit(5);
 
 		Timeline ready = Timeline.createSequence() //
 				.push(Tween.set(ga, GameObjectAccessor.SIZE_ALPHA).target(16.0f, 16.0f, 0.3f)) //
 				.push(Tween.set(ryou, GameObjectAccessor.SIZE_ALPHA).target(16.0f, 16.0f, 0.3f)) //
 				.push(Tween.set(ten, GameObjectAccessor.SIZE_ALPHA).target(16.0f, 16.0f, 0.3f)) //
 				.push(Tween.set(sei, GameObjectAccessor.SIZE_ALPHA).target(16.0f, 16.0f, 0.3f)) //
-				.push(Tween.set(dragon, GameObjectAccessor.ALPHA).target(0.0f)) //
+				.push(Tween.set(dragon, GameObjectAccessor.MOVE_SIZE_ALPHA).target(5.0f, -6.0f, 7.5f, 11.25f, 0.0f)) //
 				.push(Tween.set(easy, GameObjectAccessor.SIZE_ALPHA).target(8.0f, 8.0f, 0.0f)) //
 				.push(Tween.set(normal, GameObjectAccessor.SIZE_ALPHA).target(8.0f, 8.0f, 0.0f)) //
 				.push(Tween.set(hard, GameObjectAccessor.SIZE_ALPHA).target(8.0f, 8.0f, 0.0f)) //
@@ -69,7 +70,7 @@ public class MenuController {
 				.push(Tween.to(ryou, GameObjectAccessor.SIZE_ALPHA, 0.1f).target(2.0f, 2.0f, 1.0f).ease(Cubic.INOUT)) //
 				.push(Tween.to(ten, GameObjectAccessor.SIZE_ALPHA, 0.1f).target(2.0f, 2.0f, 1.0f).ease(Cubic.INOUT)) //
 				.push(Tween.to(sei, GameObjectAccessor.SIZE_ALPHA, 0.1f).target(2.0f, 2.0f, 1.0f).ease(Cubic.INOUT)) //
-				.push(Tween.to(dragon, GameObjectAccessor.ALPHA, 3.5f).target(1.0f).ease(Cubic.INOUT)) //
+				.push(Tween.to(dragon, GameObjectAccessor.MOVE_SIZE_ALPHA, 1.0f).target(7.0f, 7.5f, 7.5f, 11.25f, 0.5f).ease(Cubic.INOUT)) //
 				.push(Tween.to(easy, GameObjectAccessor.SIZE_ALPHA, 0.2f).target(4.0f, 4.0f, 0.8f).ease(Cubic.INOUT)) //
 				.push(Tween.to(normal, GameObjectAccessor.SIZE_ALPHA, 0.2f).target(4.0f, 4.0f, 0.8f).ease(Cubic.INOUT)) //
 				.push(Tween.to(hard, GameObjectAccessor.SIZE_ALPHA, 0.2f).target(4.0f, 4.0f, 0.8f).ease(Cubic.INOUT)) //

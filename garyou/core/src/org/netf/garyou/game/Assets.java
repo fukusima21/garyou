@@ -7,9 +7,12 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 
 public class Assets implements Disposable, AssetErrorListener {
@@ -35,13 +38,17 @@ public class Assets implements Disposable, AssetErrorListener {
 	private Texture circleTexture;
 
 	public Sprite back1;
-	private Texture back1Texture;
 
 	public Sprite back2;
 	private Texture back2Texture;
 
 	public Sprite back3;
 	private Texture back3Texture;
+
+	public Sprite grass1;
+	public Sprite grass2;
+
+	public Animation player;
 
 	private Assets() {
 	}
@@ -66,7 +73,7 @@ public class Assets implements Disposable, AssetErrorListener {
 
 		TextureAtlas atlas = assetManager.get("data/images/garyou.pack");
 
-		dragonTitle = atlas.createSprite("dragon_title");
+		dragonTitle = atlas.createSprite("dragon_game");
 
 		moon = atlas.createSprite("moon");
 		ga = atlas.createSprite("ga");
@@ -87,15 +94,10 @@ public class Assets implements Disposable, AssetErrorListener {
 		circle = new Sprite(circleTexture);
 		circlePixmap.dispose();
 
-		Pixmap back1Pixmap = new Pixmap(16, 16, Format.RGB565);
-		back1Pixmap.setColor(0x90 / 255.0f, 0xD7 / 255.0f, 0xEC / 255.0f, 0xff / 255.0f);
-		back1Pixmap.fillRectangle(0, 0, 16, 16);
-		back1Texture = new Texture(back1Pixmap);
-		back1 = new Sprite(back1Texture);
-		back1Pixmap.dispose();
+		back1 = atlas.createSprite("back2");
 
 		Pixmap back2Pixmap = new Pixmap(16, 16, Format.RGB565);
-		back2Pixmap.setColor(128 / 255.0f, 133 / 255.0f, 152 / 255.0f, 0xff / 255.0f);
+		back2Pixmap.setColor(119 / 255.0f, 0 / 255.0f, 152 / 255.0f, 113 / 255.0f);
 		back2Pixmap.fillRectangle(0, 0, 16, 16);
 		back2Texture = new Texture(back2Pixmap);
 		back2 = new Sprite(back2Texture);
@@ -108,6 +110,11 @@ public class Assets implements Disposable, AssetErrorListener {
 		back3 = new Sprite(back3Texture);
 		back3Pixmap.dispose();
 
+		player = new Animation(0.04f, atlas.createSprites("run"));
+
+		grass1 = atlas.createSprite("grass");
+		grass2 = atlas.createSprite("grass");
+
 	}
 
 	@Override
@@ -119,7 +126,6 @@ public class Assets implements Disposable, AssetErrorListener {
 	public void dispose() {
 		assetManager.dispose();
 		circleTexture.dispose();
-		back1Texture.dispose();
 		back2Texture.dispose();
 		back3Texture.dispose();
 	}

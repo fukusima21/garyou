@@ -27,10 +27,7 @@ import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Disposable;
 
 public class GameRenderer implements Disposable {
@@ -56,11 +53,10 @@ public class GameRenderer implements Disposable {
 		batch = new SpriteBatch();
 		shader = createShader();
 
-		vertices = new float[18];
+		vertices = new float[4];
 		mesh = new Mesh(true, vertices.length, 0 //
 				, new VertexAttributes( //
 						new VertexAttribute(Usage.Position, 2, "a_position") //
-						, new VertexAttribute(Usage.Color, 4, "a_color") //
 				));
 
 		camera = new OrthographicCamera(Constants.VIEWPORT_WIDTH, Constants.VIEWPORT_HEIGHT);
@@ -68,29 +64,36 @@ public class GameRenderer implements Disposable {
 
 		guiCamera = new OrthographicCamera(Constants.VIEWPORT_GUI_WIDTH, Constants.VIEWPORT_GUI_HEIGHT);
 		guiCamera.position.set(Constants.VIEWPORT_GUI_WIDTH / 2, Constants.VIEWPORT_GUI_HEIGHT / 2, 0);
+
 	}
 
 	private ShaderProgram createShader() {
 		// this shader tells opengl where to put things
-		String vertexShader = "attribute vec4 a_position; \n" //
-				+ "attribute vec4 a_color;                \n" //
+		String vertexShader = "                           \n" //
+				+ "attribute vec4 a_position;             \n" //
 				+ "uniform mat4 u_projTrans;              \n" //
-				+ "varying vec4 vColor;                   \n" //
+				+ "                                       \n" //
 				+ "void main()                            \n" //
 				+ "{                                      \n" //
-				+ "    vColor = a_color;                  \n" //
-				+ "    gl_Position = u_projTrans * vec4(a_position.xy, 0.0, 1.0);\n" //
+				+ "    gl_Position = u_projTrans * vec4(a_position.xy, 0.0 ,1.0);\n" //
 				+ "}\n"; //
 
 		// this one tells it what goes in between the points (i.e
 		// colour/texture)
-		String fragmentShader = "#ifdef GL_ES             \n" //
+		String fragmentShader = "                         \n" //
+				+ "#ifdef GL_ES                           \n" //
 				+ "precision mediump float;               \n" //
 				+ "#endif                                 \n" //
-				+ "varying vec4 vColor;                   \n" //
+				+ "                                       \n" //
+				+ "uniform vec2 resolution;               \n" //
+				+ "varying vec2 vPosition;                \n" //
+				+ "                                       \n" //
 				+ "void main()                            \n" //
 				+ "{                                      \n" //
-				+ "gl_FragColor = vColor;                 \n" //
+				+ "    vec2 position = (gl_FragCoord.xy / resolution ) - vec2(0.5);   \n" //
+				+ "    float len = length(position);      \n" //
+				+ "    float vignette = smoothstep(0.75, 0.3, len); \n" //
+				+ "    gl_FragColor = vec4(vignette, 0.0, 0.0, 1.0);  \n" //
 				+ "}";
 
 		// make an actual shader from our strings
@@ -146,6 +149,7 @@ public class GameRenderer implements Disposable {
 
 		shader.begin();
 		shader.setUniformMatrix("u_projTrans", camera.combined);
+		shader.setUniformf("resolution", Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		renderLine();
 		shader.end();
 
@@ -160,16 +164,21 @@ public class GameRenderer implements Disposable {
 	}
 
 	private void renderReady() {
-		gameController.back.getSprite().draw(batch);
 		gameController.moon.getSprite().draw(batch);
+		gameController.back.getSprite().draw(batch);
 		gameController.dragonGame.getSprite().draw(batch);
+		gameController.player.getSprite().draw(batch);
+		gameController.grass1.getSprite().draw(batch);
+		gameController.grass2.getSprite().draw(batch);
 	}
 
 	private void renderMain() {
-		gameController.back.getSprite().draw(batch);
 		gameController.moon.getSprite().draw(batch);
+		gameController.back.getSprite().draw(batch);
 		gameController.dragonGame.getSprite().draw(batch);
-
+		gameController.player.getSprite().draw(batch);
+		gameController.grass1.getSprite().draw(batch);
+		gameController.grass2.getSprite().draw(batch);
 	}
 
 	private void renderLine() {
@@ -178,39 +187,22 @@ public class GameRenderer implements Disposable {
 			return;
 		}
 
-		Rectangle bounds = gameController.moon.getSprite().getBoundingRectangle();
+		float x1 = 1.5f;
+		float y1 = 1.5f;
 
-		float x1 = gameController.touch.x;
-		float y1 = gameController.touch.y;
+		float x2 = gameController.touch.x;
+		float y2 = gameController.touch.y;
 
-		float x2 = bounds.x + bounds.width / 2.0f;
-		float y2 = bounds.y + bounds.height / 2.0f;
+		float rad1 = MathUtils.atan2(y2 - y1, x2 - x1);
 
-		float rad1 = MathUtils.PI / 2 - MathUtils.atan2(y2 - y1, x2 - x1);
+		vertices[0] = x1;
+		vertices[1] = y1;
+		vertices[2] = 15.0f * MathUtils.cos(rad1) + x1;
+		vertices[3] = 15.0f * MathUtils.sin(rad1) + y1;
 
-		vertices[0] = x1 - MathUtils.cos(rad1);
-		vertices[1] = y1 + MathUtils.sin(rad1);
-		vertices[2] = 1.0f;
-		vertices[3] = 1.0f;
-		vertices[4] = 0.0f;
-		vertices[5] = 0.5f;
-
-		vertices[6] = x1 + MathUtils.cos(rad1);
-		vertices[7] = y1 - MathUtils.sin(rad1);
-		vertices[8] = 1.0f;
-		vertices[9] = 1.0f;
-		vertices[10] = 0.0f;
-		vertices[11] = 0.5f;
-
-		vertices[12] = x2;
-		vertices[13] = y2;
-		vertices[14] = 1.0f;
-		vertices[15] = 1.0f;
-		vertices[16] = 1.0f;
-		vertices[17] = 0.5f;
-
+		Gdx.gl.glLineWidth(10.0f);
 		mesh.setVertices(vertices);
-		mesh.render(shader, GL20.GL_TRIANGLES);
+		mesh.render(shader, GL20.GL_LINES);
 
 	}
 
@@ -220,7 +212,7 @@ public class GameRenderer implements Disposable {
 
 		Assets.instance.bitmapFont.setScale(1.0f);
 		Assets.instance.bitmapFont.setColor(0.0f, 0.0f, 1.0f, 1.0f);
-		Assets.instance.bitmapFont.draw(batch, time, 8.0f, 48.0f);
+		Assets.instance.bitmapFont.draw(batch, time, 8.0f, 464.0f);
 
 	}
 

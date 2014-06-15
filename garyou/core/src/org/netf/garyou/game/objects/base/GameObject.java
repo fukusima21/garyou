@@ -27,6 +27,15 @@ public class GameObject {
 		return sprite;
 	}
 
+	public void setSprite(Sprite sprite) {
+
+		Rectangle bounds = this.sprite.getBoundingRectangle();
+		sprite.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
+		sprite.setColor(this.sprite.getColor());
+
+		this.sprite = sprite;
+	}
+
 	/**
 	 * 座標設定
 	 *
