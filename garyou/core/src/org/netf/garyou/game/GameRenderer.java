@@ -1,19 +1,3 @@
-/*******************************************************************************
- * Copyright 2013 Andreas Oehlke
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
-
 package org.netf.garyou.game;
 
 import org.netf.garyou.util.Constants;
@@ -40,6 +24,7 @@ public class GameRenderer implements Disposable {
 	private ShaderProgram shader;
 	private Mesh mesh;
 	float[] vertices;
+	private StringBuilder timer;
 
 	private GameController gameController;
 
@@ -65,6 +50,7 @@ public class GameRenderer implements Disposable {
 		guiCamera = new OrthographicCamera(Constants.VIEWPORT_GUI_WIDTH, Constants.VIEWPORT_GUI_HEIGHT);
 		guiCamera.position.set(Constants.VIEWPORT_GUI_WIDTH / 2, Constants.VIEWPORT_GUI_HEIGHT / 2, 0);
 
+		timer = new StringBuilder("00.00");
 	}
 
 	private ShaderProgram createShader() {
@@ -85,15 +71,9 @@ public class GameRenderer implements Disposable {
 				+ "precision mediump float;               \n" //
 				+ "#endif                                 \n" //
 				+ "                                       \n" //
-				+ "uniform vec2 resolution;               \n" //
-				+ "varying vec2 vPosition;                \n" //
-				+ "                                       \n" //
 				+ "void main()                            \n" //
 				+ "{                                      \n" //
-				+ "    vec2 position = (gl_FragCoord.xy / resolution ) - vec2(0.5);   \n" //
-				+ "    float len = length(position);      \n" //
-				+ "    float vignette = smoothstep(0.75, 0.3, len); \n" //
-				+ "    gl_FragColor = vec4(vignette, 0.0, 0.0, 1.0);  \n" //
+				+ "    gl_FragColor = vec4(1.0f, 1.0f, 1.0f, 0.7);  \n" //
 				+ "}";
 
 		// make an actual shader from our strings
@@ -113,32 +93,44 @@ public class GameRenderer implements Disposable {
 
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		if (gameController.state != null) {
-			switch (gameController.state) {
-			case READY:
-				renderReady();
-				break;
-			case MAIN:
-				renderMain();
-				break;
-			case FINISH:
-				break;
-			}
+		renderBackground();
+		batch.end();
+
+		batch.setProjectionMatrix(guiCamera.combined);
+		batch.begin();
+		renderPartcle();
+		batch.end();
+
+		batch.setProjectionMatrix(camera.combined);
+		batch.begin();
+		switch (gameController.getState()) {
+		case READY:
+			renderReady();
+			break;
+		case MAIN:
+		case FIRE:
+			renderMain();
+			break;
+		case FINISH:
+			break;
+		default:
+			break;
 		}
 		batch.end();
 
 		batch.setProjectionMatrix(guiCamera.combined);
 		batch.begin();
-		if (gameController.state != null) {
-			switch (gameController.state) {
-			case READY:
-				break;
-			case MAIN:
-				renderTimer();
-				break;
-			case FINISH:
-				break;
-			}
+		switch (gameController.getState()) {
+		case READY:
+			break;
+		case MAIN:
+		case FIRE:
+			renderTimer();
+			break;
+		case FINISH:
+			break;
+		default:
+			break;
 		}
 		batch.end();
 
@@ -149,7 +141,6 @@ public class GameRenderer implements Disposable {
 
 		shader.begin();
 		shader.setUniformMatrix("u_projTrans", camera.combined);
-		shader.setUniformf("resolution", Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		renderLine();
 		shader.end();
 
@@ -163,9 +154,12 @@ public class GameRenderer implements Disposable {
 		mesh.dispose();
 	}
 
+	private void renderBackground() {
+		gameController.back.getSprite().draw(batch);
+	}
+
 	private void renderReady() {
 		gameController.moon.getSprite().draw(batch);
-		gameController.back.getSprite().draw(batch);
 		gameController.dragonGame.getSprite().draw(batch);
 		gameController.player.getSprite().draw(batch);
 		gameController.grass1.getSprite().draw(batch);
@@ -173,46 +167,68 @@ public class GameRenderer implements Disposable {
 	}
 
 	private void renderMain() {
-		gameController.moon.getSprite().draw(batch);
-		gameController.back.getSprite().draw(batch);
 		gameController.dragonGame.getSprite().draw(batch);
+		gameController.grass3.getSprite().draw(batch);
+		gameController.grass4.getSprite().draw(batch);
 		gameController.player.getSprite().draw(batch);
 		gameController.grass1.getSprite().draw(batch);
 		gameController.grass2.getSprite().draw(batch);
+
+		gameController.bullet.getSprite().draw(batch);
+
 	}
 
 	private void renderLine() {
 
-		if (gameController.touch == null) {
-			return;
+		if (gameController.touch != null) {
+
+			float x1 = Constants.FIRST_BULLET_X;
+			float y1 = Constants.FIRST_BULLET_Y;
+
+			float x2 = gameController.touch.x;
+			float y2 = gameController.touch.y;
+
+			float rad1 = MathUtils.atan2(y2 - y1, x2 - x1);
+
+			vertices[0] = 1.0f * MathUtils.cos(rad1) + x1;
+			vertices[1] = 1.0f * MathUtils.sin(rad1) + y1;
+			vertices[2] = 15.0f * MathUtils.cos(rad1) + x1;
+			vertices[3] = 15.0f * MathUtils.sin(rad1) + y1;
+
+			Gdx.gl.glLineWidth(1.0f);
+			mesh.setVertices(vertices);
+			mesh.render(shader, GL20.GL_LINES);
+
 		}
-
-		float x1 = 1.5f;
-		float y1 = 1.5f;
-
-		float x2 = gameController.touch.x;
-		float y2 = gameController.touch.y;
-
-		float rad1 = MathUtils.atan2(y2 - y1, x2 - x1);
-
-		vertices[0] = x1;
-		vertices[1] = y1;
-		vertices[2] = 15.0f * MathUtils.cos(rad1) + x1;
-		vertices[3] = 15.0f * MathUtils.sin(rad1) + y1;
-
-		Gdx.gl.glLineWidth(10.0f);
-		mesh.setVertices(vertices);
-		mesh.render(shader, GL20.GL_LINES);
 
 	}
 
 	private void renderTimer() {
 
-		String time = String.valueOf(gameController.timer);
+		int time = MathUtils.floorPositive(gameController.timer * 100.0f);
+
+		if (time < 0) {
+			time = 0;
+		}
+
+		timer.setCharAt(0, time / 1000 == 0 ? ' ' : (char) ('0' + (time / 1000)));
+		timer.setCharAt(1, (char) ('0' + (time % 1000) / 100));
+		timer.setCharAt(3, (char) ('0' + (time % 100) / 10));
+		timer.setCharAt(4, (char) ('0' + (time % 10)));
 
 		Assets.instance.bitmapFont.setScale(1.0f);
 		Assets.instance.bitmapFont.setColor(0.0f, 0.0f, 1.0f, 1.0f);
-		Assets.instance.bitmapFont.draw(batch, time, 8.0f, 464.0f);
+		Assets.instance.bitmapFont.draw(batch, timer, 8.0f, 464.0f);
+
+	}
+
+	private void renderPartcle() {
+
+		if (gameController.touch != null || //
+				gameController.getState() == GameController.STATE.FIRE) {
+			float deltaTime = Gdx.graphics.getDeltaTime();
+			Assets.instance.bulletEffect.draw(batch, deltaTime);
+		}
 
 	}
 

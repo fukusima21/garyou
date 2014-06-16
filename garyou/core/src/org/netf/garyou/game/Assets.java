@@ -9,10 +9,9 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 
 public class Assets implements Disposable, AssetErrorListener {
@@ -37,6 +36,8 @@ public class Assets implements Disposable, AssetErrorListener {
 	public Sprite circle;
 	private Texture circleTexture;
 
+	public Sprite bullet;
+
 	public Sprite back1;
 
 	public Sprite back2;
@@ -47,8 +48,12 @@ public class Assets implements Disposable, AssetErrorListener {
 
 	public Sprite grass1;
 	public Sprite grass2;
+	public Sprite grass3;
+	public Sprite grass4;
 
 	public Animation player;
+
+	public ParticleEffect bulletEffect;
 
 	private Assets() {
 	}
@@ -94,26 +99,22 @@ public class Assets implements Disposable, AssetErrorListener {
 		circle = new Sprite(circleTexture);
 		circlePixmap.dispose();
 
-		back1 = atlas.createSprite("back2");
+		bullet = atlas.createSprite("bullet");
 
-		Pixmap back2Pixmap = new Pixmap(16, 16, Format.RGB565);
-		back2Pixmap.setColor(119 / 255.0f, 0 / 255.0f, 152 / 255.0f, 113 / 255.0f);
-		back2Pixmap.fillRectangle(0, 0, 16, 16);
-		back2Texture = new Texture(back2Pixmap);
-		back2 = new Sprite(back2Texture);
-		back2Pixmap.dispose();
-
-		Pixmap back3Pixmap = new Pixmap(16, 16, Format.RGB565);
-		back3Pixmap.setColor(86 / 255.0f, 0 / 255.0f, 125 / 255.0f, 0xff / 255.0f);
-		back3Pixmap.fillRectangle(0, 0, 16, 16);
-		back3Texture = new Texture(back3Pixmap);
-		back3 = new Sprite(back3Texture);
-		back3Pixmap.dispose();
+		back1 = atlas.createSprite("back1");
+		back2 = atlas.createSprite("back2");
+		back3 = atlas.createSprite("back3");
 
 		player = new Animation(0.04f, atlas.createSprites("run"));
 
 		grass1 = atlas.createSprite("grass");
 		grass2 = atlas.createSprite("grass");
+		grass3 = atlas.createSprite("grass");
+		grass4 = atlas.createSprite("grass");
+
+		bulletEffect = new ParticleEffect();
+		bulletEffect.load(Gdx.files.internal("data/particle/bullet.p") //
+				, Gdx.files.internal("data/particle"));
 
 	}
 
@@ -126,8 +127,6 @@ public class Assets implements Disposable, AssetErrorListener {
 	public void dispose() {
 		assetManager.dispose();
 		circleTexture.dispose();
-		back2Texture.dispose();
-		back3Texture.dispose();
 	}
 
 }
