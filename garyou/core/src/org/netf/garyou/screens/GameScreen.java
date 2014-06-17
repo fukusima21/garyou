@@ -9,7 +9,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 public class GameScreen extends AbstractGameScreen {
@@ -78,10 +77,10 @@ public class GameScreen extends AbstractGameScreen {
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
 
-		if (gameController.getState() == STATE.MAIN) {
+		if (gameController.getState() == STATE.CHARGE) {
 			touchPoint.set(screenX, screenY, 0);
 			camera.unproject(touchPoint);
-			gameController.touch = touchPoint;
+			gameController.onMove(touchPoint);
 		}
 
 		return true;
@@ -90,7 +89,7 @@ public class GameScreen extends AbstractGameScreen {
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 
-		if (gameController.getState() == STATE.MAIN) {
+		if (gameController.getState() == STATE.CHARGE) {
 			touchPoint.set(screenX, screenY, 0);
 			camera.unproject(touchPoint);
 			gameController.onFire(touchPoint);

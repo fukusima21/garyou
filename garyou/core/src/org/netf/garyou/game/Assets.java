@@ -39,12 +39,8 @@ public class Assets implements Disposable, AssetErrorListener {
 	public Sprite bullet;
 
 	public Sprite back1;
-
 	public Sprite back2;
-	private Texture back2Texture;
-
 	public Sprite back3;
-	private Texture back3Texture;
 
 	public Sprite grass1;
 	public Sprite grass2;
@@ -54,6 +50,9 @@ public class Assets implements Disposable, AssetErrorListener {
 	public Animation player;
 
 	public ParticleEffect bulletEffect;
+
+	public Sprite eye;
+	private Texture eyeTexture;
 
 	private Assets() {
 	}
@@ -116,6 +115,13 @@ public class Assets implements Disposable, AssetErrorListener {
 		bulletEffect.load(Gdx.files.internal("data/particle/bullet.p") //
 				, Gdx.files.internal("data/particle"));
 
+		Pixmap eyePixmap = new Pixmap(128, 128, Format.RGBA8888);
+		eyePixmap.setColor(1.0f, 0.0f, 0.0f, 1.0f);
+		eyePixmap.fillCircle(63, 63, 63);
+		eyeTexture = new Texture(eyePixmap);
+		eye = new Sprite(eyeTexture);
+		eyePixmap.dispose();
+
 	}
 
 	@Override
@@ -127,6 +133,7 @@ public class Assets implements Disposable, AssetErrorListener {
 	public void dispose() {
 		assetManager.dispose();
 		circleTexture.dispose();
+		eyeTexture.dispose();
 	}
 
 }

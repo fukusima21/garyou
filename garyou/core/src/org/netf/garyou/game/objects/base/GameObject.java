@@ -37,25 +37,21 @@ public class GameObject {
 	}
 
 	/**
-	 * 座標設定
-	 *
-	 * @param x 中心X座標
-	 * @param y 中心Y座標
-	 */
-	public void setCenterPosition(float x, float y) {
-		Rectangle rectangle = sprite.getBoundingRectangle();
-		sprite.setBounds(x - rectangle.width / 2.0f, y - rectangle.height / 2.0f, rectangle.width, rectangle.height);
-	}
-
-	/**
 	 * サイズ設定
 	 *
 	 * @param width 幅
 	 * @param height 高さ
 	 */
-	public void setSize(float width, float height) {
-		Rectangle rectangle = sprite.getBoundingRectangle();
-		sprite.setBounds(rectangle.x + rectangle.width / 2.0f - width / 2.0f, rectangle.y + rectangle.height / 2.0f - height / 2.0f, width, height);
+	public void setSize(float targetWidth, float targetHeight) {
+
+		float x = sprite.getX();
+		float y = sprite.getY();
+		float width = sprite.getWidth();
+		float height = sprite.getHeight();
+
+		sprite.setPosition(x + width / 2.0f - targetWidth / 2.0f, y + height / 2.0f - targetHeight / 2.0f);
+		sprite.setSize(targetWidth, targetHeight);
+
 	}
 
 	/**

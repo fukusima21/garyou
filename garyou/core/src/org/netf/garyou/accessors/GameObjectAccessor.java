@@ -72,13 +72,13 @@ public class GameObjectAccessor implements TweenAccessor<GameObject> {
 
 		switch (tweenType) {
 		case MOVE:
-			target.setCenterPosition(newValues[0], newValues[1]);
+			target.getSprite().setCenter(newValues[0], newValues[1]);
 			break;
 		case SIZE:
 			target.setSize(newValues[0], newValues[1]);
 			break;
 		case MOVE_SIZE:
-			target.setCenterPosition(newValues[0], newValues[1]);
+			target.getSprite().setCenter(newValues[0], newValues[1]);
 			target.setSize(newValues[2], newValues[3]);
 			break;
 		case ALPHA:
@@ -89,7 +89,7 @@ public class GameObjectAccessor implements TweenAccessor<GameObject> {
 			target.getSprite().setAlpha(newValues[2]);
 			break;
 		case MOVE_SIZE_ALPHA:
-			target.setCenterPosition(newValues[0], newValues[1]);
+			target.getSprite().setCenter(newValues[0], newValues[1]);
 			target.setSize(newValues[2], newValues[3]);
 			target.getSprite().setAlpha(newValues[4]);
 			break;
@@ -97,7 +97,7 @@ public class GameObjectAccessor implements TweenAccessor<GameObject> {
 			target.getSprite().setRotation(newValues[0]);
 			break;
 		case MOVE_ALPHA:
-			target.setCenterPosition(newValues[0], newValues[1]);
+			target.getSprite().setCenter(newValues[0], newValues[1]);
 			target.getSprite().setAlpha(newValues[2]);
 			break;
 		default:
