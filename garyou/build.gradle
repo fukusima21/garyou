@@ -86,7 +86,6 @@ project(":html") {
 project(":core") {
     apply plugin: "java"
 
-
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "aurelienribon:tweenengine:6.3.3"
@@ -98,6 +97,6 @@ tasks.eclipse.doLast {
     delete ".project"
 }
 
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
+def encoding = { it.encoding = "UTF-8" }
+tasks.withType(AbstractCompile) each { encoding it.options }
+

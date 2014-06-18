@@ -203,8 +203,11 @@ public class GameController extends InputAdapter {
 
 		if ((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) <= (r1 + r2) * (r1 + r2)) {
 			// TODO HIT＆終了
-			fire.kill();
-			main.kill();
+//			fire.kill();
+//			main.kill();
+//			foreground1.kill();
+//			foreground2.kill();
+			tweenManager.killAll();
 			bullet.getSprite().setAlpha(0.0f);
 			Assets.instance.bulletEffect.allowCompletion();
 		}
@@ -316,7 +319,7 @@ public class GameController extends InputAdapter {
 
 		fire = Timeline.createSequence() //
 				.push(Tween.set(bullet, GameObjectAccessor.MOVE_ALPHA).target(x1, y1, 1.0f)) //
-				.push(Tween.to(bullet, GameObjectAccessor.MOVE_ALPHA, 1.0f).target(x3, y3, 1.0f)) //
+				.push(Tween.to(bullet, GameObjectAccessor.MOVE_ALPHA, 1.0f).target(x3, y3, 1.0f).ease(Linear.INOUT)) //
 				.repeat(0, 0.0f); //
 
 		fire.setCallback(new TweenCallback() {
