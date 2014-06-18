@@ -50,9 +50,17 @@ public class Assets implements Disposable, AssetErrorListener {
 	public Animation player;
 
 	public ParticleEffect bulletEffect;
+	public ParticleEffect hitEffect;
 
 	public Sprite eye;
 	private Texture eyeTexture;
+
+	public Sprite clear;
+	public Sprite notClear;
+	public Sprite shout;
+
+	public Sprite white;
+	private Texture whiteTexture;
 
 	private Assets() {
 	}
@@ -115,12 +123,27 @@ public class Assets implements Disposable, AssetErrorListener {
 		bulletEffect.load(Gdx.files.internal("data/particle/bullet.p") //
 				, Gdx.files.internal("data/particle"));
 
+		hitEffect = new ParticleEffect();
+		hitEffect.load(Gdx.files.internal("data/particle/hit.p") //
+				, Gdx.files.internal("data/particle"));
+
 		Pixmap eyePixmap = new Pixmap(128, 128, Format.RGBA8888);
 		eyePixmap.setColor(1.0f, 0.0f, 0.0f, 1.0f);
 		eyePixmap.fillCircle(63, 63, 63);
 		eyeTexture = new Texture(eyePixmap);
 		eye = new Sprite(eyeTexture);
 		eyePixmap.dispose();
+
+		clear = atlas.createSprite("clear");
+		notClear = atlas.createSprite("notclear");
+		shout = atlas.createSprite("shout");
+
+		Pixmap whitePixmap = new Pixmap(64, 64, Format.RGBA8888);
+		whitePixmap.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+		whitePixmap.fillRectangle(0, 0, 64, 64);
+		whiteTexture = new Texture(whitePixmap);
+		white = new Sprite(whiteTexture);
+		whitePixmap.dispose();
 
 	}
 
@@ -134,6 +157,7 @@ public class Assets implements Disposable, AssetErrorListener {
 		assetManager.dispose();
 		circleTexture.dispose();
 		eyeTexture.dispose();
+		whiteTexture.dispose();
 	}
 
 }

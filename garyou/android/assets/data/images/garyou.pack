@@ -1,187 +1,208 @@
 
 garyou.png
-size: 1000,970
+size: 1000,1012
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
 back1
   rotate: false
-  xy: 2, 730
+  xy: 2, 772
   size: 640, 240
   orig: 640, 240
   offset: 0, 0
   index: -1
 back2
   rotate: false
-  xy: 2, 488
+  xy: 2, 530
   size: 640, 240
   orig: 640, 240
   offset: 0, 0
   index: -1
 back3
   rotate: false
-  xy: 2, 246
+  xy: 2, 288
   size: 640, 240
   orig: 640, 240
   offset: 0, 0
   index: -1
 bullet
   rotate: false
-  xy: 968, 938
+  xy: 968, 980
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
+clear
+  rotate: false
+  xy: 324, 206
+  size: 160, 80
+  orig: 160, 80
+  offset: 0, 0
+  index: -1
 dragon_game
   rotate: false
-  xy: 644, 730
+  xy: 644, 772
   size: 160, 240
   orig: 160, 240
   offset: 0, 0
   index: -1
 easy
   rotate: false
-  xy: 806, 680
+  xy: 806, 722
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 ga
   rotate: false
-  xy: 644, 568
+  xy: 644, 610
   size: 160, 160
   orig: 160, 160
   offset: 0, 0
   index: -1
 grass
   rotate: false
-  xy: 2, 164
+  xy: 2, 206
   size: 320, 80
   orig: 320, 80
   offset: 0, 0
   index: -1
 hard
   rotate: false
-  xy: 164, 34
+  xy: 164, 76
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 moon
   rotate: false
-  xy: 806, 558
+  xy: 806, 600
   size: 120, 120
   orig: 120, 120
   offset: 0, 0
   index: -1
 normal
   rotate: false
-  xy: 644, 276
+  xy: 644, 318
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
+notclear
+  rotate: false
+  xy: 294, 124
+  size: 160, 80
+  orig: 160, 80
+  offset: 0, 0
+  index: -1
 run
   rotate: false
-  xy: 806, 436
+  xy: 806, 478
   size: 95, 120
   orig: 95, 120
   offset: 0, 0
   index: 1
 run
   rotate: false
-  xy: 324, 124
+  xy: 486, 166
   size: 95, 120
   orig: 95, 120
   offset: 0, 0
   index: 2
 run
   rotate: false
-  xy: 421, 124
+  xy: 583, 166
   size: 95, 120
   orig: 95, 120
   offset: 0, 0
   index: 3
 run
   rotate: false
-  xy: 518, 124
+  xy: 680, 196
   size: 95, 120
   orig: 95, 120
   offset: 0, 0
   index: 4
 run
   rotate: false
-  xy: 294, 2
+  xy: 774, 326
   size: 95, 120
   orig: 95, 120
   offset: 0, 0
   index: 5
 run
   rotate: false
-  xy: 391, 2
+  xy: 777, 204
   size: 95, 120
   orig: 95, 120
   offset: 0, 0
   index: 6
 run
   rotate: false
-  xy: 488, 2
+  xy: 903, 478
   size: 95, 120
   orig: 95, 120
   offset: 0, 0
   index: 7
 run
   rotate: false
-  xy: 774, 284
+  xy: 871, 356
   size: 95, 120
   orig: 95, 120
   offset: 0, 0
   index: 8
 run
   rotate: false
-  xy: 585, 2
+  xy: 874, 234
   size: 95, 120
   orig: 95, 120
   offset: 0, 0
   index: 9
 run
   rotate: false
-  xy: 615, 124
+  xy: 294, 2
   size: 95, 120
   orig: 95, 120
   offset: 0, 0
   index: 10
 run
   rotate: false
-  xy: 712, 154
+  xy: 391, 2
   size: 95, 120
   orig: 95, 120
   offset: 0, 0
   index: 11
 run
   rotate: false
-  xy: 809, 162
+  xy: 488, 44
   size: 95, 120
   orig: 95, 120
   offset: 0, 0
   index: 12
 ryou
   rotate: false
-  xy: 806, 810
+  xy: 806, 852
   size: 160, 160
   orig: 160, 160
   offset: 0, 0
   index: -1
 sei
   rotate: false
-  xy: 2, 2
+  xy: 2, 44
   size: 160, 160
   orig: 160, 160
   offset: 0, 0
   index: -1
+shout
+  rotate: false
+  xy: 2, 12
+  size: 166, 30
+  orig: 166, 30
+  offset: 0, 0
+  index: -1
 ten
   rotate: false
-  xy: 644, 406
+  xy: 644, 448
   size: 160, 160
   orig: 160, 160
   offset: 0, 0

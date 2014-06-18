@@ -59,9 +59,11 @@ public class GameRenderer implements Disposable {
 		case MAIN:
 		case CHARGE:
 		case FIRE:
+		case FINISH_HIT:
 			renderMain();
 			break;
-		case FINISH:
+		case CLEAR:
+			renderClear();
 			break;
 		default:
 			break;
@@ -72,17 +74,21 @@ public class GameRenderer implements Disposable {
 		batch.begin();
 		switch (gameController.getState()) {
 		case READY:
-			break;
 		case MAIN:
 			renderTimer();
 			break;
 		case CHARGE:
 		case FIRE:
-			renderPartcle();
 			renderTimer();
+			renderBulletPartcle();
 			break;
-		case FINISH:
+		case FINISH_HIT:
+			renderTimer();
+			renderBulletPartcle();
+			renderHitPartcle();
 			break;
+		case CLEAR:
+			renderTimer();
 		default:
 			break;
 		}
@@ -103,7 +109,7 @@ public class GameRenderer implements Disposable {
 		case FIRE:
 			renderGuide();
 			break;
-		case FINISH:
+		case FINISH_HIT:
 			break;
 		default:
 			break;
@@ -145,6 +151,16 @@ public class GameRenderer implements Disposable {
 		}
 	}
 
+	private void renderClear() {
+		gameController.whiteBoard.getSprite().draw(batch);
+		gameController.clearMessage.getSprite().draw(batch);
+		gameController.player.getSprite().draw(batch);
+		gameController.grass3.getSprite().draw(batch);
+		gameController.grass4.getSprite().draw(batch);
+		gameController.grass1.getSprite().draw(batch);
+		gameController.grass2.getSprite().draw(batch);
+	}
+
 	private void renderGuide() {
 
 		float[] vertices = gameController.guide.getVertices();
@@ -175,10 +191,14 @@ public class GameRenderer implements Disposable {
 
 	}
 
-	private void renderPartcle() {
+	private void renderBulletPartcle() {
 		float deltaTime = Gdx.graphics.getDeltaTime();
 		Assets.instance.bulletEffect.draw(batch, deltaTime);
+	}
 
+	private void renderHitPartcle() {
+		float deltaTime = Gdx.graphics.getDeltaTime();
+		Assets.instance.hitEffect.draw(batch, deltaTime);
 	}
 
 }

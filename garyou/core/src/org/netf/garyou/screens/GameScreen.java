@@ -71,6 +71,10 @@ public class GameScreen extends AbstractGameScreen {
 			gameController.onCharge(touchPoint);
 		}
 
+		if (gameController.getState() == STATE.CLEAR) {
+			game.setScreen(new MenuScreen(game));
+		}
+
 		return true;
 	}
 
