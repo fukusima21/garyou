@@ -62,6 +62,11 @@ public class Assets implements Disposable, AssetErrorListener {
 	public Sprite white;
 	private Texture whiteTexture;
 
+	public Sprite logo5jcup;
+
+	public Sprite next;
+	public Sprite menu;
+
 	private Assets() {
 	}
 
@@ -73,6 +78,7 @@ public class Assets implements Disposable, AssetErrorListener {
 
 		assetManager.load("data/fonts/aoyagi.fnt", BitmapFont.class);
 		assetManager.load("data/images/garyou.pack", TextureAtlas.class);
+		assetManager.load("data/images/background.pack", TextureAtlas.class);
 
 		assetManager.finishLoading();
 		Gdx.app.debug(TAG, "# of assets loaded: " + assetManager.getAssetNames().size);
@@ -84,6 +90,7 @@ public class Assets implements Disposable, AssetErrorListener {
 		bitmapFont = assetManager.get("data/fonts/aoyagi.fnt");
 
 		TextureAtlas atlas = assetManager.get("data/images/garyou.pack");
+		TextureAtlas background = assetManager.get("data/images/background.pack");
 
 		dragonTitle = atlas.createSprite("dragon_game");
 
@@ -99,7 +106,7 @@ public class Assets implements Disposable, AssetErrorListener {
 
 		dragonGame = atlas.createSprite("dragon_game");
 
-		Pixmap circlePixmap = new Pixmap(128, 128, Format.RGBA8888);
+		Pixmap circlePixmap = new Pixmap(128, 128, Format.RGBA4444);
 		circlePixmap.setColor(1.0f, 1.0f, 1.0f, 1.0f);
 		circlePixmap.fillCircle(63, 63, 63);
 		circleTexture = new Texture(circlePixmap);
@@ -108,9 +115,9 @@ public class Assets implements Disposable, AssetErrorListener {
 
 		bullet = atlas.createSprite("bullet");
 
-		back1 = atlas.createSprite("back1");
-		back2 = atlas.createSprite("back2");
-		back3 = atlas.createSprite("back3");
+		back1 = background.createSprite("back1");
+		back2 = background.createSprite("back2");
+		back3 = background.createSprite("back3");
 
 		player = new Animation(0.04f, atlas.createSprites("run"));
 
@@ -127,7 +134,7 @@ public class Assets implements Disposable, AssetErrorListener {
 		hitEffect.load(Gdx.files.internal("data/particle/hit.p") //
 				, Gdx.files.internal("data/particle"));
 
-		Pixmap eyePixmap = new Pixmap(128, 128, Format.RGBA8888);
+		Pixmap eyePixmap = new Pixmap(128, 128, Format.RGBA4444);
 		eyePixmap.setColor(1.0f, 0.0f, 0.0f, 1.0f);
 		eyePixmap.fillCircle(63, 63, 63);
 		eyeTexture = new Texture(eyePixmap);
@@ -139,11 +146,15 @@ public class Assets implements Disposable, AssetErrorListener {
 		shout = atlas.createSprite("shout");
 
 		Pixmap whitePixmap = new Pixmap(64, 64, Format.RGBA8888);
-		whitePixmap.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+		whitePixmap.setColor(0xe7 / 255.0f, 0xe3 / 255.0f, 0xc8 / 255.0f, 1.0f);
 		whitePixmap.fillRectangle(0, 0, 64, 64);
 		whiteTexture = new Texture(whitePixmap);
 		white = new Sprite(whiteTexture);
 		whitePixmap.dispose();
+
+		logo5jcup = atlas.createSprite("logo_5jcup");
+		next = atlas.createSprite("next");
+		menu = atlas.createSprite("return");
 
 	}
 

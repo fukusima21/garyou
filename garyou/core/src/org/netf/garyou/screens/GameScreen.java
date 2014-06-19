@@ -43,7 +43,7 @@ public class GameScreen extends AbstractGameScreen {
 
 		gameController.update(deltaTime);
 
-		Gdx.gl.glClearColor(0xe7 / 255.0f, 0xe3 / 255.0f, 0xc8 / 255.0f, 0xff / 255.0f);
+		Gdx.gl.glClearColor(0xe7 / 255.0f, 0xe3 / 255.0f, 0xc8 / 255.0f, 1.0f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		gameRenderer.render();
@@ -68,23 +68,11 @@ public class GameScreen extends AbstractGameScreen {
 		if (gameController.getState() == STATE.MAIN) {
 			touchPoint.set(screenX, screenY, 0);
 			camera.unproject(touchPoint);
-			gameController.onCharge(touchPoint);
+			gameController.onFire(touchPoint);
 		}
 
 		if (gameController.getState() == STATE.CLEAR) {
-			game.setScreen(new MenuScreen(game));
-		}
-
-		return true;
-	}
-
-	@Override
-	public boolean touchDragged(int screenX, int screenY, int pointer) {
-
-		if (gameController.getState() == STATE.CHARGE) {
-			touchPoint.set(screenX, screenY, 0);
-			camera.unproject(touchPoint);
-			gameController.onMove(touchPoint);
+			focus(screenX, screenY);
 		}
 
 		return true;
@@ -93,13 +81,57 @@ public class GameScreen extends AbstractGameScreen {
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 
-		if (gameController.getState() == STATE.CHARGE) {
-			touchPoint.set(screenX, screenY, 0);
-			camera.unproject(touchPoint);
-			gameController.onFire(touchPoint);
+		if (gameController.getState() == STATE.CLEAR) {
+			focus(screenX, screenY);
+
+			if (gameController.menu.focused) {
+				game.setScreen(new MenuScreen(game));
+			} else if (gameController.next.focused) {
+				switch (mode) {
+				case EASY:
+					game.setScreen(new GameScreen(game, MODE.NORMAL));
+					break;
+				case NORMAL:
+					game.setScreen(new GameScreen(game, MODE.HARD));
+					break;
+				case HARD:
+					break;
+				}
+			}
 		}
 
 		return true;
+	}
+
+	@Override
+	public boolean mouseMoved(int screenX, int screenY) {
+		if (gameController.getState() == STATE.CLEAR) {
+			focus(screenX, screenY);
+		}
+		return true;
+	}
+
+	private void focus(int screenX, int screenY) {
+
+		if (gameController.getState() == STATE.CLEAR) {
+
+			touchPoint.set(screenX, screenY, 0);
+			camera.unproject(touchPoint);
+
+			if (gameController.menu.isHit(touchPoint.x, touchPoint.y)) {
+				gameController.menu.focused = true;
+			} else {
+				gameController.menu.focused = false;
+			}
+
+			if (gameController.next.isHit(touchPoint.x, touchPoint.y)) {
+				gameController.next.focused = true;
+			} else {
+				gameController.next.focused = false;
+			}
+
+		}
+
 	}
 
 }

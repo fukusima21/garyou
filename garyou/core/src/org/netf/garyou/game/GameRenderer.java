@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Disposable;
 
 public class GameRenderer implements Disposable {
@@ -57,7 +58,6 @@ public class GameRenderer implements Disposable {
 			renderReady();
 			break;
 		case MAIN:
-		case CHARGE:
 		case FIRE:
 		case FINISH_HIT:
 			renderMain();
@@ -77,7 +77,6 @@ public class GameRenderer implements Disposable {
 		case MAIN:
 			renderTimer();
 			break;
-		case CHARGE:
 		case FIRE:
 			renderTimer();
 			renderBulletPartcle();
@@ -102,10 +101,8 @@ public class GameRenderer implements Disposable {
 		shapeRenderer.begin(ShapeType.Line);
 		switch (gameController.getState()) {
 		case READY:
-			break;
 		case MAIN:
 			break;
-		case CHARGE:
 		case FIRE:
 			renderGuide();
 			break;
@@ -133,8 +130,8 @@ public class GameRenderer implements Disposable {
 		gameController.moon.getSprite().draw(batch);
 		gameController.dragonGame.getSprite().draw(batch);
 		gameController.player.getSprite().draw(batch);
+		gameController.grass3.getSprite().draw(batch);
 		gameController.grass1.getSprite().draw(batch);
-		gameController.grass2.getSprite().draw(batch);
 	}
 
 	private void renderMain() {
@@ -152,9 +149,29 @@ public class GameRenderer implements Disposable {
 	}
 
 	private void renderClear() {
+
 		gameController.whiteBoard.getSprite().draw(batch);
+
 		gameController.clearMessage.getSprite().draw(batch);
 		gameController.player.getSprite().draw(batch);
+
+		if (gameController.menu.focused) {
+			Rectangle bounds = gameController.menu.getSprite().getBoundingRectangle();
+			gameController.circle.getSprite().setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
+			gameController.circle.getSprite().setAlpha(0.5f);
+			gameController.circle.getSprite().draw(batch);
+		}
+
+		if (gameController.next.focused) {
+			Rectangle bounds = gameController.next.getSprite().getBoundingRectangle();
+			gameController.circle.getSprite().setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
+			gameController.circle.getSprite().setAlpha(0.5f);
+			gameController.circle.getSprite().draw(batch);
+		}
+
+		gameController.menu.getSprite().draw(batch);
+		gameController.next.getSprite().draw(batch);
+
 		gameController.grass3.getSprite().draw(batch);
 		gameController.grass4.getSprite().draw(batch);
 		gameController.grass1.getSprite().draw(batch);

@@ -1,9 +1,12 @@
 apply plugin: "java"
 
-sourceCompatibility = 1.6
+sourceCompatibility = 1.7
 
 sourceSets.main.java.srcDirs = [ "src/" ]
 
 eclipse.project {
     name = appName + "-core"
 }
+
+def encoding = { it.encoding = "UTF-8" }
+tasks.withType(AbstractCompile) each { encoding it.options }

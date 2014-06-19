@@ -52,7 +52,7 @@ draftWar {
    from "war"
 }
 
-sourceCompatibility = 1.6
+sourceCompatibility = 1.7
 sourceSets.main.java.srcDirs = [ "src/" ]
 sourceSets.main.compileClasspath += files(project(':core').sourceSets.main.allJava.srcDirs)
 
@@ -60,3 +60,6 @@ sourceSets.main.compileClasspath += files(project(':core').sourceSets.main.allJa
 eclipse.project {
     name = appName + "-html"
 }
+
+def encoding = { it.encoding = "UTF-8" }
+tasks.withType(AbstractCompile) each { encoding it.options }

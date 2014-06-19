@@ -15,6 +15,18 @@ public class GameObject {
 	 * @param y 中心Y座標
 	 * @param width 幅
 	 * @param height 高さ
+	 */
+	public GameObject(Sprite sprite, float x, float y, float width, float height) {
+		this(sprite, x, y, width, height, 1.0f);
+	}
+
+	/**
+	 * コンストラクタ
+	 *
+	 * @param x 中心X座標
+	 * @param y 中心Y座標
+	 * @param width 幅
+	 * @param height 高さ
 	 * @param a 透過
 	 */
 	public GameObject(Sprite sprite, float x, float y, float width, float height, float a) {
