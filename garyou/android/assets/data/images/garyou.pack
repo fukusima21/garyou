@@ -1,6 +1,6 @@
 
 garyou.png
-size: 1002,1022
+size: 1019,1022
 format: RGBA4444
 filter: Nearest,Nearest
 repeat: none
@@ -30,6 +30,13 @@ easy
   xy: 2, 166
   size: 128, 128
   orig: 128, 128
+  offset: 0, 0
+  index: -1
+final
+  rotate: false
+  xy: 406, 860
+  size: 160, 80
+  orig: 160, 80
   offset: 0, 0
   index: -1
 ga
@@ -69,7 +76,7 @@ moon
   index: -1
 next
   rotate: false
-  xy: 406, 860
+  xy: 648, 942
   size: 160, 80
   orig: 160, 80
   offset: 0, 0
@@ -83,7 +90,7 @@ normal
   index: -1
 notclear
   rotate: false
-  xy: 648, 942
+  xy: 568, 860
   size: 160, 80
   orig: 160, 80
   offset: 0, 0
@@ -97,63 +104,63 @@ retry
   index: -1
 return
   rotate: false
-  xy: 568, 860
+  xy: 448, 778
   size: 160, 80
   orig: 160, 80
   offset: 0, 0
   index: -1
 run
   rotate: false
-  xy: 448, 738
+  xy: 164, 295
   size: 95, 120
   orig: 95, 120
   offset: 0, 0
   index: 1
 run
   rotate: false
-  xy: 545, 738
+  xy: 132, 173
   size: 95, 120
   orig: 95, 120
   offset: 0, 0
   index: 2
 run
   rotate: false
-  xy: 164, 295
+  xy: 132, 51
   size: 95, 120
   orig: 95, 120
   offset: 0, 0
   index: 3
 run
   rotate: false
-  xy: 642, 738
+  xy: 610, 738
   size: 95, 120
   orig: 95, 120
   offset: 0, 0
   index: 4
 run
   rotate: false
-  xy: 132, 173
+  xy: 730, 820
   size: 95, 120
   orig: 95, 120
   offset: 0, 0
   index: 5
 run
   rotate: false
-  xy: 132, 51
+  xy: 827, 870
   size: 95, 120
   orig: 95, 120
   offset: 0, 0
   index: 6
 run
   rotate: false
-  xy: 810, 902
+  xy: 924, 870
   size: 95, 120
   orig: 95, 120
   offset: 0, 0
   index: 7
 run
   rotate: false
-  xy: 907, 902
+  xy: 707, 698
   size: 95, 120
   orig: 95, 120
   offset: 0, 0
@@ -202,7 +209,7 @@ sei
   index: -1
 shout
   rotate: false
-  xy: 326, 706
+  xy: 810, 992
   size: 166, 30
   orig: 166, 30
   offset: 0, 0
