@@ -94,9 +94,11 @@ public class GameScreen extends AbstractGameScreen {
 				case NORMAL:
 					game.setScreen(new GameScreen(game, MODE.HARD));
 					break;
-				case HARD:
+				default:
 					break;
 				}
+			} else if (gameController.finalStage.focused) {
+				// TODO 最終章へ
 			}
 		} else if (gameController.getState() == STATE.NOT_CLEAR2) {
 			focus(screenX, screenY);
@@ -139,6 +141,12 @@ public class GameScreen extends AbstractGameScreen {
 				gameController.next.focused = true;
 			} else {
 				gameController.next.focused = false;
+			}
+
+			if (gameController.finalStage.isHit(touchPoint.x, touchPoint.y)) {
+				gameController.finalStage.focused = true;
+			} else {
+				gameController.finalStage.focused = false;
 			}
 
 		}

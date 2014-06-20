@@ -10,10 +10,6 @@ import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenManager;
-import aurelienribon.tweenengine.equations.Cubic;
-import aurelienribon.tweenengine.equations.Linear;
-import aurelienribon.tweenengine.equations.Quad;
-import aurelienribon.tweenengine.equations.Sine;
 
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -43,6 +39,7 @@ public class GameController extends InputAdapter {
 	public GameObject next;
 	public GameObject menu;
 	public GameObject retry;
+	public GameObject finalStage;
 	public GameObject circle;
 
 	public Polyline guide;
@@ -62,10 +59,8 @@ public class GameController extends InputAdapter {
 	private Timeline foreground1;
 	private Timeline foreground2;
 	private Timeline fire;
-	private Timeline finishHit;
-	private Timeline clear;
-	private Timeline notClear1;
-	private Timeline notClear2;
+
+	private GameTimelines gameTimelines;
 
 	public MODE mode;
 
@@ -86,9 +81,9 @@ public class GameController extends InputAdapter {
 
 		state = STATE.READY;
 		timer = 30.0f;
+		stateTime = 0f;
 
 		dragonGame = new GameObject(Assets.instance.dragonGame, 5.0f, 15.0f, 10.0f, 15.0f);
-
 		moon = new GameObject(Assets.instance.moon, 7.0f, 11.5f, 4.0f, 4.0f);
 
 		switch (mode) {
@@ -104,7 +99,6 @@ public class GameController extends InputAdapter {
 		}
 
 		player = new GameObject((Sprite) Assets.instance.player.getKeyFrame(0), -1.25f, 1.5f, 1.5f, 2.0f);
-
 		grass1 = new GameObject(Assets.instance.grass1, 5.0f, 1.25f, 10.0f, 2.5f);
 		grass2 = new GameObject(Assets.instance.grass2, 15.0f, 1.25f, 10.0f, 2.5f);
 		grass3 = new GameObject(Assets.instance.grass3, 5.0f, 1.25f, -10.0f, 2.5f);
@@ -122,9 +116,10 @@ public class GameController extends InputAdapter {
 
 		whiteBoard = new GameObject(Assets.instance.white, 15.0f, 7.5f, 10.0f, 8.0f, 0.5f);
 
-		menu = new GameObject(Assets.instance.menu, 15.0f, 7.5f, 10.0f, 8.0f);
-		next = new GameObject(Assets.instance.next, 15.0f, 7.5f, 10.0f, 8.0f);
-		retry = new GameObject(Assets.instance.retry, 15.0f, 7.5f, 10.0f, 8.0f);
+		menu = new GameObject(Assets.instance.menu, 15.0f, 7.5f, 3.5f, 1.75f);
+		next = new GameObject(Assets.instance.next, 15.0f, 7.5f, 3.5f, 1.75f);
+		finalStage = new GameObject(Assets.instance.finalStage, 15.0f, 7.5f, 3.5f, 1.75f);
+		retry = new GameObject(Assets.instance.retry, 15.0f, 7.5f, 3.5f, 1.75f);
 
 		circle = new GameObject(Assets.instance.circle, 2.0f, 2.0f, 4.0f, 4.0f, 0.5f);
 
@@ -135,29 +130,36 @@ public class GameController extends InputAdapter {
 		Tween.registerAccessor(GameObject.class, new GameObjectAccessor());
 		Tween.setCombinedAttributesLimit(5);
 
-		createReadyTimeline();
+		gameTimelines = new GameTimelines(this);
 
-		createMainTimeline();
+		ready = gameTimelines.createReady();
 
 		ready.setCallback(new TweenCallback() {
 			@Override
 			public void onEvent(int type, BaseTween<?> source) {
 				state = STATE.MAIN;
 				timer = 30.0f;
-
-				if (main != null) {
-					main.start(tweenManager);
-				}
+				main.start(tweenManager);
 				background.start(tweenManager);
 				foreground1.start(tweenManager);
 				foreground2.start(tweenManager);
-
 			}
-		}).setCallbackTriggers(TweenCallback.END);
+		}).setCallbackTriggers(TweenCallback.END) //
+				.start(tweenManager);
 
-		ready.start(tweenManager);
+		main = gameTimelines.createMain();
 
-		stateTime = 0f;
+		foreground1 = gameTimelines.createForeground1();
+		foreground2 = gameTimelines.createForeground2();
+
+		background = gameTimelines.createBackground();
+		background.setCallback(new TweenCallback() {
+			@Override
+			public void onEvent(int type, BaseTween<?> source) {
+				foreground1.kill();
+				foreground2.kill();
+			}
+		});
 
 	}
 
@@ -220,100 +222,6 @@ public class GameController extends InputAdapter {
 
 	}
 
-	private void createReadyTimeline() {
-
-		ready = Timeline.createSequence() //
-				.push(Tween.set(grass1, GameObjectAccessor.MOVE).target(15.0f, 1.25f)) //
-				.push(Tween.set(grass3, GameObjectAccessor.MOVE).target(15.0f, 1.25f)) //
-				.push(Tween.set(back, GameObjectAccessor.MOVE).target(30.0f, 7.5f)) //
-				.push(Tween.set(moon, GameObjectAccessor.MOVE_SIZE_ALPHA).target(7.0f, 11.5f, 4.0f, 4.0f, 1.0f)) //
-				.push(Tween.set(dragonGame, GameObjectAccessor.ROTATE).target(0.0f)) //
-				.push(Tween.set(dragonGame, GameObjectAccessor.MOVE_SIZE_ALPHA).target(5.0f, -30.0f, 20.0f, 30.0f, 0.1f)) //
-				.beginParallel() //
-				.push(Tween.to(grass1, GameObjectAccessor.MOVE, 0.5f).target(5.0f, 1.25f).ease(Cubic.IN)) //
-				.push(Tween.to(grass3, GameObjectAccessor.MOVE, 0.5f).target(5.0f, 1.25f).ease(Cubic.IN)) //
-				.push(Tween.to(back, GameObjectAccessor.MOVE, 0.5f).target(20.0f, 7.5f).ease(Cubic.IN)) //
-				.push(Tween.to(moon, GameObjectAccessor.MOVE_SIZE_ALPHA, 0.5f).target(7.3f, 12.4f, 0.5f, 0.5f, 0.0f).ease(Quad.IN)) //
-				.end() //
-				.push(Tween.to(dragonGame, GameObjectAccessor.MOVE_SIZE_ALPHA, 1.0f).target(5.0f, 7.5f, 20.0f, 30.0f, 0.5f).ease(Sine.INOUT)) //
-				.push(Tween.to(dragonGame, GameObjectAccessor.MOVE_SIZE_ALPHA, 1.0f).target(7.0f, 9.0f, 7.0f, 10.5f, 1.0f).ease(Sine.INOUT)) //
-				.push(Tween.set(player, GameObjectAccessor.MOVE_SIZE_ALPHA).target(-1.25f, 1.5f, 1.5f, 2.0f, 0.3f)) //
-				.push(Tween.to(player, GameObjectAccessor.MOVE_SIZE_ALPHA, 1.0f).target(1.5f, 1.5f, 1.5f, 2.0f, 0.8f).ease(Sine.INOUT)) //
-				.repeat(0, 0.0f); //
-
-	}
-
-	private void createMainTimeline() {
-
-		background = Timeline.createSequence() //
-				.push(Tween.set(back, GameObjectAccessor.MOVE).target(20.0f, 7.5f)) //
-				.push(Tween.to(back, GameObjectAccessor.MOVE, 30.0f).target(-10.0f, 7.5f).ease(Linear.INOUT)) //
-				.repeat(0, 0.0f) //
-				.setCallbackTriggers(TweenCallback.END); //
-
-		background.setCallback(new TweenCallback() {
-			@Override
-			public void onEvent(int type, BaseTween<?> source) {
-				foreground1.kill();
-				foreground2.kill();
-			}
-		});
-
-		foreground1 = Timeline.createSequence() //
-				.push(Tween.set(grass1, GameObjectAccessor.MOVE).target(5.0f, 1.25f)) //
-				.push(Tween.set(grass2, GameObjectAccessor.MOVE).target(15.0f, 1.25f)) //
-				.beginParallel() //
-				.push(Tween.to(grass1, GameObjectAccessor.MOVE, 2.0f).target(-5.0f, 1.25f).ease(Linear.INOUT)) //
-				.push(Tween.to(grass2, GameObjectAccessor.MOVE, 2.0f).target(5.0f, 1.25f).ease(Linear.INOUT)) //
-				.end() //
-				.repeat(-1, 0.0f);
-
-		foreground2 = Timeline.createSequence() //
-				.push(Tween.set(grass3, GameObjectAccessor.MOVE).target(5.0f, 1.25f)) //
-				.push(Tween.set(grass4, GameObjectAccessor.MOVE).target(15.0f, 1.25f)) //
-				.beginParallel() //
-				.push(Tween.to(grass3, GameObjectAccessor.MOVE, 4.0f).target(-5.0f, 1.25f).ease(Linear.INOUT)) //
-				.push(Tween.to(grass4, GameObjectAccessor.MOVE, 4.0f).target(5.0f, 1.25f).ease(Linear.INOUT)) //
-				.end() //
-				.repeat(-1, 0.0f);
-
-		switch (mode) {
-		case EASY:
-			// 出現後、左右にゆれる
-			main = Timeline.createSequence() //
-					.push(Tween.set(eye, GameObjectAccessor.COLOR).target(1.0f, 0.0f, 0.0f, 1.0f)) //
-					.push(Tween.set(dragonGame, GameObjectAccessor.ROTATE).target(0.0f)) //
-					.push(Tween.set(dragonGame, GameObjectAccessor.MOVE_SIZE).target(7.0f, 9.0f, 7.0f, 10.5f)) //
-					.push(Tween.to(dragonGame, GameObjectAccessor.MOVE_SIZE, 3.0f).target(10.0f, 9.0f, 7.0f, 10.5f).ease(Sine.INOUT)) //
-					.push(Tween.to(dragonGame, GameObjectAccessor.MOVE_SIZE, 6.0f).target(4.0f, 9.0f, 7.0f, 10.5f).ease(Sine.INOUT)) //
-					.push(Tween.to(dragonGame, GameObjectAccessor.MOVE_SIZE, 3.0f).target(7.0f, 9.0f, 7.0f, 10.5f).ease(Sine.INOUT)) //
-					.repeat(-1, 0.0f); //
-			break;
-		case NORMAL:
-			// 出現後、上下にゆれる
-			main = Timeline.createSequence() //
-					.push(Tween.set(eye, GameObjectAccessor.COLOR).target(1.0f, 0.0f, 0.0f, 1.0f)) //
-					.push(Tween.set(dragonGame, GameObjectAccessor.ROTATE).target(0.0f)) //
-					.push(Tween.set(dragonGame, GameObjectAccessor.MOVE_SIZE).target(7.0f, 9.0f, 7.0f, 10.5f)) //
-					.push(Tween.to(dragonGame, GameObjectAccessor.MOVE_SIZE, 1.0f).target(7.0f, 5.0f, 7.0f, 10.5f).ease(Quad.OUT)) //
-					.push(Tween.to(dragonGame, GameObjectAccessor.MOVE_SIZE, 1.0f).target(7.0f, 15.0f, 7.0f, 10.5f).ease(Quad.INOUT)) //
-					.push(Tween.to(dragonGame, GameObjectAccessor.MOVE_SIZE, 1.0f).target(7.0f, 9.0f, 7.0f, 10.5f).ease(Quad.OUT)) //
-					.repeat(-1, 0.0f); //
-			break;
-		case HARD:
-			// 出現後、回転
-			dragonGame.getSprite().setOrigin(3.5f, 5.25f);
-			main = Timeline.createSequence() //
-					.push(Tween.set(eye, GameObjectAccessor.COLOR).target(1.0f, 0.0f, 0.0f, 1.0f)) //
-					.push(Tween.set(dragonGame, GameObjectAccessor.MOVE_SIZE).target(7.0f, 9.0f, 7.0f, 10.5f)) //
-					.push(Tween.set(dragonGame, GameObjectAccessor.ROTATE).target(0.0f)) //
-					.push(Tween.to(dragonGame, GameObjectAccessor.ROTATE, 2.0f).target(360.0f).ease(Sine.INOUT)) //
-					.repeat(-1, 0.0f); //
-			break;
-		}
-
-	}
-
 	private void updateEyePosition() {
 
 		float deg = dragonGame.getSprite().getRotation();
@@ -367,10 +275,7 @@ public class GameController extends InputAdapter {
 		vertices[2] = 15.0f * MathUtils.cos(rad1) + x1;
 		vertices[3] = 15.0f * MathUtils.sin(rad1) + y1;
 
-		fire = Timeline.createSequence() //
-				.push(Tween.set(bullet, GameObjectAccessor.MOVE).target(x1, y1)) //
-				.push(Tween.to(bullet, GameObjectAccessor.MOVE, 1.0f).target(x2, y2).ease(Quad.OUT)) //
-				.repeat(0, 0.0f); //
+		fire = gameTimelines.createFire(x1, y1, x2, y2);
 
 		fire.setCallback(new TweenCallback() {
 			@Override
@@ -380,25 +285,6 @@ public class GameController extends InputAdapter {
 		}).setCallbackTriggers(TweenCallback.END);
 
 		fire.start(tweenManager);
-
-	}
-
-	public void onMove(Vector3 touchPoint) {
-
-		float x1 = Constants.FIRST_BULLET_X;
-		float y1 = Constants.FIRST_BULLET_Y;
-
-		float x2 = touchPoint.x;
-		float y2 = touchPoint.y;
-
-		float rad1 = MathUtils.atan2(y2 - y1, x2 - x1);
-
-		float[] vertices = guide.getVertices();
-
-		vertices[0] = 1.0f * MathUtils.cos(rad1) + x1;
-		vertices[1] = 1.0f * MathUtils.sin(rad1) + y1;
-		vertices[2] = 15.0f * MathUtils.cos(rad1) + x1;
-		vertices[3] = 15.0f * MathUtils.sin(rad1) + y1;
 
 	}
 
@@ -419,43 +305,17 @@ public class GameController extends InputAdapter {
 		float y1 = dragonGame.getSprite().getY() + dragonGame.getSprite().getHeight() / 2.0f;
 		float a1 = dragonGame.getSprite().getColor().a;
 
-		finishHit = Timeline.createSequence() //
-				.beginParallel() //
-				.beginSequence() //
-				.push(Tween.set(eye, GameObjectAccessor.COLOR).target(1.0f, 0.0f, 0.0f, 1.0f)) //
-				.push(Tween.to(eye, GameObjectAccessor.COLOR, 0.5f).target(0.0f, 0.0f, 0.0f, 0.6f).ease(Quad.IN)) //
-				.push(Tween.set(dragonGame, GameObjectAccessor.MOVE_ALPHA).target(x1, y1, a1)) //
-				.push(Tween.to(dragonGame, GameObjectAccessor.MOVE_ALPHA, 1.5f).target(x1, -5.25f, 0.0f).ease(Cubic.INOUT)) //
-				.end() //
-				.push(Tween.set(player, GameObjectAccessor.MOVE_SIZE_ALPHA).target(1.5f, 1.5f, 1.5f, 2.0f, 0.8f)) //
-				.push(Tween.to(player, GameObjectAccessor.MOVE_SIZE_ALPHA, 2.0f).target(11.5f, 1.5f, 1.5f, 2.0f, 0.8f).ease(Linear.INOUT)) //
-				.end() //
-				.repeat(0, 0.0f).delay(0.2f); //
-
-		finishHit.setCallbackTriggers(TweenCallback.END);
-		finishHit.setCallback(new TweenCallback() {
+		Timeline timeline = gameTimelines.createClear1(x1, y1, a1);
+		timeline.setCallbackTriggers(TweenCallback.END);
+		timeline.setCallback(new TweenCallback() {
 			@Override
 			public void onEvent(int type, BaseTween<?> source) {
 				state = STATE.CLEAR2;
-				clear.start(tweenManager);
+				gameTimelines.createClear2().start(tweenManager);
 			}
 		});
 
-		finishHit.start(tweenManager);
-
-		clear = Timeline.createSequence() //
-				.push(Tween.set(whiteBoard, GameObjectAccessor.MOVE).target(15.0f, 7.5f)) //
-				.push(Tween.to(whiteBoard, GameObjectAccessor.MOVE, 0.5f).target(5.0f, 7.5f).ease(Quad.IN)) //
-				.push(Tween.set(player, GameObjectAccessor.MOVE_SIZE).target(5.0f, 5.0f, 1.5f, 2.0f)) //
-				.push(Tween.set(clearMessage, GameObjectAccessor.MOVE_SIZE).target(5.0f, 8.0f, 2.0f, 1.0f)) //
-				.push(Tween.to(player, GameObjectAccessor.MOVE_SIZE, 0.5f).target(5.0f, 5.0f, 1.5f, 2.0f).ease(Quad.IN)) //
-				.push(Tween.to(clearMessage, GameObjectAccessor.MOVE_SIZE, 0.5f).target(5.0f, 9.5f, 7.0f, 3.5f).ease(Quad.IN)) //
-				.push(Tween.set(menu, GameObjectAccessor.MOVE_SIZE).target(2.0f, 6.5f, 1.0f, 1.0f)) //
-				.push(Tween.set(next, GameObjectAccessor.MOVE_SIZE).target(8.0f, 6.5f, 1.0f, 1.0f)) //
-				.beginParallel() //
-				.push(Tween.to(menu, GameObjectAccessor.MOVE_SIZE, 0.5f).target(2.0f, 6.5f, 3.5f, 1.75f).ease(Quad.IN)) //
-				.push(Tween.to(next, GameObjectAccessor.MOVE_SIZE, 0.5f).target(8.0f, 6.5f, 3.5f, 1.75f).ease(Quad.IN)) //
-				.end().repeat(0, 0.0f); //
+		timeline.start(tweenManager);
 
 	}
 
@@ -465,41 +325,19 @@ public class GameController extends InputAdapter {
 
 		Assets.instance.bulletEffect.allowCompletion();
 
-		notClear1 = Timeline.createSequence() //
-				.push(Tween.set(dragonGame, GameObjectAccessor.ALPHA).target(1.0f)) //
-				.push(Tween.set(eye, GameObjectAccessor.ALPHA).target(1.0f)) //
-				.push(Tween.set(player, GameObjectAccessor.MOVE_SIZE_ALPHA).target(1.5f, 1.5f, 1.5f, 2.0f, 0.8f)) //
-				.beginParallel() //
-				.push(Tween.to(dragonGame, GameObjectAccessor.ALPHA, 2.0f).target(0.3f).ease(Linear.INOUT)) //
-				.push(Tween.to(eye, GameObjectAccessor.ALPHA, 2.0f).target(0.3f).ease(Linear.INOUT)) //
-				.push(Tween.to(player, GameObjectAccessor.MOVE_SIZE_ALPHA, 2.0f).target(11.5f, 1.5f, 1.5f, 2.0f, 0.8f).ease(Linear.INOUT)) //
-				.end() //
-				.repeat(0, 0.0f).delay(0.2f); //
+		Timeline timeline = gameTimelines.createNotClear1();
 
-		notClear1.setCallbackTriggers(TweenCallback.END);
-		notClear1.setCallback(new TweenCallback() {
+		timeline.setCallbackTriggers(TweenCallback.END);
+
+		timeline.setCallback(new TweenCallback() {
 			@Override
 			public void onEvent(int type, BaseTween<?> source) {
 				state = STATE.NOT_CLEAR2;
-				notClear2.start(tweenManager);
+				gameTimelines.createNotClear2().start(tweenManager);
 			}
 		});
 
-		notClear1.start(tweenManager);
-
-		notClear2 = Timeline.createSequence() //
-				.push(Tween.set(whiteBoard, GameObjectAccessor.MOVE).target(15.0f, 7.5f)) //
-				.push(Tween.to(whiteBoard, GameObjectAccessor.MOVE, 0.5f).target(5.0f, 7.5f).ease(Quad.IN)) //
-				.push(Tween.set(player, GameObjectAccessor.MOVE_SIZE).target(5.0f, 5.0f, 1.5f, 2.0f)) //
-				.push(Tween.set(notClearMessage, GameObjectAccessor.MOVE_SIZE).target(5.0f, 8.0f, 2.0f, 1.0f)) //
-				.push(Tween.to(player, GameObjectAccessor.MOVE_SIZE, 0.5f).target(5.0f, 5.0f, 1.5f, 2.0f).ease(Quad.IN)) //
-				.push(Tween.to(notClearMessage, GameObjectAccessor.MOVE_SIZE, 0.5f).target(5.0f, 9.5f, 7.0f, 3.5f).ease(Quad.IN)) //
-				.push(Tween.set(menu, GameObjectAccessor.MOVE_SIZE).target(2.0f, 6.5f, 1.0f, 1.0f)) //
-				.push(Tween.set(retry, GameObjectAccessor.MOVE_SIZE).target(7.75f, 6.5f, 1.0f, 1.0f)) //
-				.beginParallel() //
-				.push(Tween.to(menu, GameObjectAccessor.MOVE_SIZE, 0.5f).target(2.0f, 6.5f, 3.5f, 1.75f).ease(Quad.IN)) //
-				.push(Tween.to(retry, GameObjectAccessor.MOVE_SIZE, 0.5f).target(7.75f, 6.5f, 4.0f, 1.75f).ease(Quad.IN)) //
-				.end().repeat(0, 0.0f); //
+		timeline.start(tweenManager);
 
 	}
 }

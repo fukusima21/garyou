@@ -186,8 +186,16 @@ public class GameRenderer implements Disposable {
 			gameController.circle.getSprite().draw(batch);
 		}
 
+		if (gameController.finalStage.focused) {
+			Rectangle bounds = gameController.finalStage.getSprite().getBoundingRectangle();
+			gameController.circle.getSprite().setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
+			gameController.circle.getSprite().setAlpha(0.5f);
+			gameController.circle.getSprite().draw(batch);
+		}
+
 		gameController.menu.getSprite().draw(batch);
 		gameController.next.getSprite().draw(batch);
+		gameController.finalStage.getSprite().draw(batch);
 
 		gameController.grass3.getSprite().draw(batch);
 		gameController.grass4.getSprite().draw(batch);
