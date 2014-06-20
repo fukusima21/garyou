@@ -59,11 +59,19 @@ public class GameRenderer implements Disposable {
 			break;
 		case MAIN:
 		case FIRE:
-		case FINISH_HIT:
 			renderMain();
 			break;
-		case CLEAR:
-			renderClear();
+		case CLEAR1:
+			renderClear1();
+			break;
+		case CLEAR2:
+			renderClear2();
+			break;
+		case NOT_CLEAR1:
+			renderNoClear1();
+			break;
+		case NOT_CLEAR2:
+			renderNoClear2();
 			break;
 		default:
 			break;
@@ -81,13 +89,17 @@ public class GameRenderer implements Disposable {
 			renderTimer();
 			renderBulletPartcle();
 			break;
-		case FINISH_HIT:
+		case CLEAR1:
 			renderTimer();
 			renderBulletPartcle();
 			renderHitPartcle();
 			break;
-		case CLEAR:
+		case CLEAR2:
 			renderTimer();
+		case NOT_CLEAR1:
+		case NOT_CLEAR2:
+			renderTimer();
+			renderBulletPartcle();
 		default:
 			break;
 		}
@@ -100,13 +112,8 @@ public class GameRenderer implements Disposable {
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		shapeRenderer.begin(ShapeType.Line);
 		switch (gameController.getState()) {
-		case READY:
-		case MAIN:
-			break;
 		case FIRE:
 			renderGuide();
-			break;
-		case FINISH_HIT:
 			break;
 		default:
 			break;
@@ -148,7 +155,17 @@ public class GameRenderer implements Disposable {
 		}
 	}
 
-	private void renderClear() {
+	private void renderClear1() {
+		gameController.eye.getSprite().draw(batch);
+		gameController.dragonGame.getSprite().draw(batch);
+		gameController.grass3.getSprite().draw(batch);
+		gameController.grass4.getSprite().draw(batch);
+		gameController.player.getSprite().draw(batch);
+		gameController.grass1.getSprite().draw(batch);
+		gameController.grass2.getSprite().draw(batch);
+	}
+
+	private void renderClear2() {
 
 		gameController.whiteBoard.getSprite().draw(batch);
 
@@ -176,6 +193,53 @@ public class GameRenderer implements Disposable {
 		gameController.grass4.getSprite().draw(batch);
 		gameController.grass1.getSprite().draw(batch);
 		gameController.grass2.getSprite().draw(batch);
+	}
+
+	private void renderNoClear1() {
+
+		gameController.eye.getSprite().draw(batch);
+		gameController.dragonGame.getSprite().draw(batch);
+		gameController.player.getSprite().draw(batch);
+
+		gameController.grass3.getSprite().draw(batch);
+		gameController.grass4.getSprite().draw(batch);
+		gameController.grass1.getSprite().draw(batch);
+		gameController.grass2.getSprite().draw(batch);
+
+	}
+
+	private void renderNoClear2() {
+
+		gameController.whiteBoard.getSprite().draw(batch);
+
+		gameController.eye.getSprite().draw(batch);
+		gameController.dragonGame.getSprite().draw(batch);
+
+		gameController.notClearMessage.getSprite().draw(batch);
+		gameController.player.getSprite().draw(batch);
+
+		if (gameController.menu.focused) {
+			Rectangle bounds = gameController.menu.getSprite().getBoundingRectangle();
+			gameController.circle.getSprite().setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
+			gameController.circle.getSprite().setAlpha(0.5f);
+			gameController.circle.getSprite().draw(batch);
+		}
+
+		if (gameController.retry.focused) {
+			Rectangle bounds = gameController.retry.getSprite().getBoundingRectangle();
+			gameController.circle.getSprite().setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
+			gameController.circle.getSprite().setAlpha(0.5f);
+			gameController.circle.getSprite().draw(batch);
+		}
+
+		gameController.menu.getSprite().draw(batch);
+		gameController.retry.getSprite().draw(batch);
+
+		gameController.grass3.getSprite().draw(batch);
+		gameController.grass4.getSprite().draw(batch);
+		gameController.grass1.getSprite().draw(batch);
+		gameController.grass2.getSprite().draw(batch);
+
 	}
 
 	private void renderGuide() {
@@ -209,13 +273,19 @@ public class GameRenderer implements Disposable {
 	}
 
 	private void renderBulletPartcle() {
-		float deltaTime = Gdx.graphics.getDeltaTime();
-		Assets.instance.bulletEffect.draw(batch, deltaTime);
+
+		if (!Assets.instance.bulletEffect.isComplete()) {
+			float deltaTime = Gdx.graphics.getDeltaTime();
+			Assets.instance.bulletEffect.draw(batch, deltaTime);
+		}
 	}
 
 	private void renderHitPartcle() {
-		float deltaTime = Gdx.graphics.getDeltaTime();
-		Assets.instance.hitEffect.draw(batch, deltaTime);
+
+		if (!Assets.instance.hitEffect.isComplete()) {
+			float deltaTime = Gdx.graphics.getDeltaTime();
+			Assets.instance.hitEffect.draw(batch, deltaTime);
+		}
 	}
 
 }

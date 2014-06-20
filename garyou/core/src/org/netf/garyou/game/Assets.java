@@ -66,6 +66,7 @@ public class Assets implements Disposable, AssetErrorListener {
 
 	public Sprite next;
 	public Sprite menu;
+	public Sprite retry;
 
 	private Assets() {
 	}
@@ -155,6 +156,7 @@ public class Assets implements Disposable, AssetErrorListener {
 		logo5jcup = atlas.createSprite("logo_5jcup");
 		next = atlas.createSprite("next");
 		menu = atlas.createSprite("return");
+		retry = atlas.createSprite("retry");
 
 	}
 

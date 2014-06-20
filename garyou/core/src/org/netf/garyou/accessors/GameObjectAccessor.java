@@ -63,10 +63,9 @@ public class GameObjectAccessor implements TweenAccessor<GameObject> {
 			return 3;
 		case COLOR:
 			returnValues[0] = target.getSprite().getColor().r;
-			returnValues[1] = target.getSprite().getColor().r;
-			returnValues[2] = target.getSprite().getColor().g;
-			returnValues[3] = target.getSprite().getColor().a;
-			return 4;
+			returnValues[1] = target.getSprite().getColor().g;
+			returnValues[2] = target.getSprite().getColor().b;
+			return 3;
 		default:
 			break;
 		}
@@ -108,7 +107,7 @@ public class GameObjectAccessor implements TweenAccessor<GameObject> {
 			target.getSprite().setAlpha(newValues[2]);
 			break;
 		case COLOR:
-			target.getSprite().setColor(newValues[0], newValues[1], newValues[2], newValues[3]);
+			target.getSprite().setColor(newValues[0], newValues[1], newValues[2], target.getSprite().getColor().a);
 			break;
 		default:
 			break;

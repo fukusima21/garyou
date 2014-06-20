@@ -71,7 +71,7 @@ public class GameScreen extends AbstractGameScreen {
 			gameController.onFire(touchPoint);
 		}
 
-		if (gameController.getState() == STATE.CLEAR) {
+		if (gameController.getState() == STATE.CLEAR2) {
 			focus(screenX, screenY);
 		}
 
@@ -81,7 +81,7 @@ public class GameScreen extends AbstractGameScreen {
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 
-		if (gameController.getState() == STATE.CLEAR) {
+		if (gameController.getState() == STATE.CLEAR2) {
 			focus(screenX, screenY);
 
 			if (gameController.menu.focused) {
@@ -98,6 +98,15 @@ public class GameScreen extends AbstractGameScreen {
 					break;
 				}
 			}
+		} else if (gameController.getState() == STATE.NOT_CLEAR2) {
+			focus(screenX, screenY);
+
+			if (gameController.menu.focused) {
+				game.setScreen(new MenuScreen(game));
+			} else if (gameController.retry.focused) {
+				gameController.init();
+			}
+
 		}
 
 		return true;
@@ -105,7 +114,9 @@ public class GameScreen extends AbstractGameScreen {
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		if (gameController.getState() == STATE.CLEAR) {
+		if (gameController.getState() == STATE.CLEAR2) {
+			focus(screenX, screenY);
+		} else if (gameController.getState() == STATE.NOT_CLEAR2) {
 			focus(screenX, screenY);
 		}
 		return true;
@@ -113,7 +124,7 @@ public class GameScreen extends AbstractGameScreen {
 
 	private void focus(int screenX, int screenY) {
 
-		if (gameController.getState() == STATE.CLEAR) {
+		if (gameController.getState() == STATE.CLEAR2) {
 
 			touchPoint.set(screenX, screenY, 0);
 			camera.unproject(touchPoint);
@@ -128,6 +139,25 @@ public class GameScreen extends AbstractGameScreen {
 				gameController.next.focused = true;
 			} else {
 				gameController.next.focused = false;
+			}
+
+		}
+
+		if (gameController.getState() == STATE.NOT_CLEAR2) {
+
+			touchPoint.set(screenX, screenY, 0);
+			camera.unproject(touchPoint);
+
+			if (gameController.menu.isHit(touchPoint.x, touchPoint.y)) {
+				gameController.menu.focused = true;
+			} else {
+				gameController.menu.focused = false;
+			}
+
+			if (gameController.retry.isHit(touchPoint.x, touchPoint.y)) {
+				gameController.retry.focused = true;
+			} else {
+				gameController.retry.focused = false;
 			}
 
 		}

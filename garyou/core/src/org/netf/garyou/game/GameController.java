@@ -42,6 +42,7 @@ public class GameController extends InputAdapter {
 	public GameObject whiteBoard;
 	public GameObject next;
 	public GameObject menu;
+	public GameObject retry;
 	public GameObject circle;
 
 	public Polyline guide;
@@ -50,7 +51,7 @@ public class GameController extends InputAdapter {
 	private float stateTime;
 
 	public static enum STATE {
-		NULL, READY, MAIN, FIRE, FINISH_HIT, CLEAR
+		NULL, READY, MAIN, FIRE, CLEAR1, CLEAR2, NOT_CLEAR1, NOT_CLEAR2
 	}
 
 	private STATE state;
@@ -63,6 +64,8 @@ public class GameController extends InputAdapter {
 	private Timeline fire;
 	private Timeline finishHit;
 	private Timeline clear;
+	private Timeline notClear1;
+	private Timeline notClear2;
 
 	public MODE mode;
 
@@ -79,7 +82,7 @@ public class GameController extends InputAdapter {
 		init();
 	}
 
-	private void init() {
+	public void init() {
 
 		state = STATE.READY;
 		timer = 30.0f;
@@ -114,13 +117,14 @@ public class GameController extends InputAdapter {
 		eye = new GameObject(Assets.instance.eye, 5.0f, 7.5f, 0.4f, 0.4f);
 
 		clearMessage = new GameObject(Assets.instance.clear, 5.0f, 19.0f, 8.0f, 4.0f);
-		notClearMessage = new GameObject(Assets.instance.notClear, 5.0f, 7.5f, 8.0f, 4.0f);
+		notClearMessage = new GameObject(Assets.instance.notClear, 5.0f, 19.0f, 8.0f, 4.0f);
 		shout = new GameObject(Assets.instance.shout, 5.0f, 7.5f, 8.0f, 4.0f);
 
 		whiteBoard = new GameObject(Assets.instance.white, 15.0f, 7.5f, 10.0f, 8.0f, 0.5f);
 
 		menu = new GameObject(Assets.instance.menu, 15.0f, 7.5f, 10.0f, 8.0f);
 		next = new GameObject(Assets.instance.next, 15.0f, 7.5f, 10.0f, 8.0f);
+		retry = new GameObject(Assets.instance.retry, 15.0f, 7.5f, 10.0f, 8.0f);
 
 		circle = new GameObject(Assets.instance.circle, 2.0f, 2.0f, 4.0f, 4.0f, 0.5f);
 
@@ -163,29 +167,26 @@ public class GameController extends InputAdapter {
 			checkHit(deltaTime);
 		} else {
 			tweenManager.update(deltaTime);
+			updateEyePosition();
 		}
 
 		if (state == STATE.MAIN || state == STATE.FIRE) {
 			timer = timer - deltaTime;
-		}
-
-		if (state == STATE.FIRE) {
-
-			Rectangle bounds = bullet.getSprite().getBoundingRectangle();
-			float x = bounds.x + bounds.width / 2.0f;
-			float y = bounds.y + bounds.height / 2.0f;
-
-			Assets.instance.bulletEffect.setPosition(x * Constants.VIEWPORT_GUI_WIDTH / Constants.VIEWPORT_WIDTH //
-			, y * Constants.VIEWPORT_GUI_HEIGHT / Constants.VIEWPORT_HEIGHT);
-
-			if (Assets.instance.bulletEffect.isComplete()) {
-				// TODO 終了判定へ
-				state = STATE.MAIN;
+			if (timer < 0.0f) {
+				startNotClear();
 			}
 
-		}
+			if (state == STATE.FIRE) {
 
-		updateEyePosition();
+				Rectangle bounds = bullet.getSprite().getBoundingRectangle();
+				float x = bounds.x + bounds.width / 2.0f;
+				float y = bounds.y + bounds.height / 2.0f;
+
+				Assets.instance.bulletEffect.setPosition(x * Constants.VIEWPORT_GUI_WIDTH / Constants.VIEWPORT_WIDTH //
+				, y * Constants.VIEWPORT_GUI_HEIGHT / Constants.VIEWPORT_HEIGHT);
+
+			}
+		}
 
 		stateTime = stateTime + deltaTime;
 		Sprite keyFrame = (Sprite) Assets.instance.player.getKeyFrame(stateTime, true);
@@ -212,69 +213,10 @@ public class GameController extends InputAdapter {
 			float r2 = eye.getSprite().getWidth() / 2.0f;
 
 			if ((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) <= (r1 + r2) * (r1 + r2)) {
-				startFinishHit(x2, y2);
+				startClear(x2, y2);
 				break;
 			}
 		}
-
-	}
-
-	private void startFinishHit(float x, float y) {
-
-		state = STATE.FINISH_HIT;
-
-		main.kill();
-		fire.kill();
-
-		Assets.instance.bulletEffect.allowCompletion();
-
-		Assets.instance.hitEffect.setPosition(x * Constants.VIEWPORT_GUI_WIDTH / Constants.VIEWPORT_WIDTH //
-		, y * Constants.VIEWPORT_GUI_HEIGHT / Constants.VIEWPORT_HEIGHT);
-		Assets.instance.hitEffect.start();
-
-		float x1 = dragonGame.getSprite().getX() + dragonGame.getSprite().getWidth() / 2.0f;
-		float y1 = dragonGame.getSprite().getY() + dragonGame.getSprite().getHeight() / 2.0f;
-		float a1 = dragonGame.getSprite().getColor().a;
-
-		finishHit = Timeline.createSequence() //
-				.beginParallel() //
-				.beginSequence() //
-				.push(Tween.set(eye, GameObjectAccessor.COLOR).target(1.0f, 0.0f, 0.0f, 1.0f)) //
-				.push(Tween.to(eye, GameObjectAccessor.COLOR, 0.5f).target(0.0f, 0.0f, 0.0f, 0.6f).ease(Quad.IN)) //
-				.push(Tween.set(dragonGame, GameObjectAccessor.MOVE_ALPHA).target(x1, y1, a1)) //
-				.push(Tween.to(dragonGame, GameObjectAccessor.MOVE_ALPHA, 1.5f).target(x1, -5.25f, 0.0f).ease(Cubic.INOUT)) //
-				.end() //
-				.push(Tween.set(player, GameObjectAccessor.MOVE_SIZE_ALPHA).target(1.5f, 1.5f, 1.5f, 2.0f, 0.8f)) //
-				.push(Tween.to(player, GameObjectAccessor.MOVE_SIZE_ALPHA, 2.0f).target(11.5f, 1.5f, 1.5f, 2.0f, 0.8f).ease(Linear.INOUT)) //
-				.end() //
-				.repeat(0, 0.0f).delay(0.2f); //
-
-		finishHit.setCallbackTriggers(TweenCallback.END);
-		finishHit.setCallback(new TweenCallback() {
-			@Override
-			public void onEvent(int type, BaseTween<?> source) {
-				state = STATE.CLEAR;
-				clear.start(tweenManager);
-			}
-		});
-
-		finishHit.start(tweenManager);
-
-		clear = Timeline.createSequence() //
-				.push(Tween.set(whiteBoard, GameObjectAccessor.MOVE).target(15.0f, 7.5f)) //
-				.push(Tween.to(whiteBoard, GameObjectAccessor.MOVE, 0.5f).target(5.0f, 7.5f).ease(Quad.IN)) //
-				.push(Tween.set(player, GameObjectAccessor.MOVE_SIZE).target(5.0f, 5.0f, 1.5f, 2.0f)) //
-				.push(Tween.set(clearMessage, GameObjectAccessor.MOVE_SIZE).target(5.0f, 8.0f, 2.0f, 1.0f)) //
-				.push(Tween.to(player, GameObjectAccessor.MOVE_SIZE, 0.5f).target(5.0f, 5.0f, 1.5f, 2.0f).ease(Quad.IN)) //
-				.push(Tween.to(clearMessage, GameObjectAccessor.MOVE_SIZE, 0.5f).target(5.0f, 9.5f, 7.0f, 3.5f).ease(Quad.IN)) //
-				.push(Tween.set(menu, GameObjectAccessor.MOVE_SIZE).target(2.0f, 6.5f, 1.0f, 1.0f)) //
-				.push(Tween.set(next, GameObjectAccessor.MOVE_SIZE).target(8.0f, 6.5f, 1.0f, 1.0f)) //
-				.beginParallel().push(Tween.to(menu, GameObjectAccessor.MOVE_SIZE, 0.5f).target(2.0f, 6.5f, 3.5f, 1.75f).ease(Quad.IN)) //
-				.push(Tween.to(next, GameObjectAccessor.MOVE_SIZE, 0.5f).target(8.0f, 6.5f, 3.5f, 1.75f).ease(Quad.IN)) //
-				.end()
-
-				.repeat(0, 0.0f); //
-		;
 
 	}
 
@@ -363,7 +305,7 @@ public class GameController extends InputAdapter {
 			dragonGame.getSprite().setOrigin(3.5f, 5.25f);
 			main = Timeline.createSequence() //
 					.push(Tween.set(eye, GameObjectAccessor.COLOR).target(1.0f, 0.0f, 0.0f, 1.0f)) //
-					.push(Tween.set(dragonGame, GameObjectAccessor.MOVE_SIZE_ALPHA).target(7.0f, 9.0f, 7.0f, 10.5f, 1.0f)) //
+					.push(Tween.set(dragonGame, GameObjectAccessor.MOVE_SIZE).target(7.0f, 9.0f, 7.0f, 10.5f)) //
 					.push(Tween.set(dragonGame, GameObjectAccessor.ROTATE).target(0.0f)) //
 					.push(Tween.to(dragonGame, GameObjectAccessor.ROTATE, 2.0f).target(360.0f).ease(Sine.INOUT)) //
 					.repeat(-1, 0.0f); //
@@ -433,7 +375,7 @@ public class GameController extends InputAdapter {
 		fire.setCallback(new TweenCallback() {
 			@Override
 			public void onEvent(int type, BaseTween<?> source) {
-				Assets.instance.bulletEffect.allowCompletion();
+				startNotClear();
 			}
 		}).setCallbackTriggers(TweenCallback.END);
 
@@ -457,6 +399,107 @@ public class GameController extends InputAdapter {
 		vertices[1] = 1.0f * MathUtils.sin(rad1) + y1;
 		vertices[2] = 15.0f * MathUtils.cos(rad1) + x1;
 		vertices[3] = 15.0f * MathUtils.sin(rad1) + y1;
+
+	}
+
+	private void startClear(float x, float y) {
+
+		state = STATE.CLEAR1;
+
+		main.kill();
+		fire.kill();
+
+		Assets.instance.bulletEffect.allowCompletion();
+
+		Assets.instance.hitEffect.setPosition(x * Constants.VIEWPORT_GUI_WIDTH / Constants.VIEWPORT_WIDTH //
+		, y * Constants.VIEWPORT_GUI_HEIGHT / Constants.VIEWPORT_HEIGHT);
+		Assets.instance.hitEffect.start();
+
+		float x1 = dragonGame.getSprite().getX() + dragonGame.getSprite().getWidth() / 2.0f;
+		float y1 = dragonGame.getSprite().getY() + dragonGame.getSprite().getHeight() / 2.0f;
+		float a1 = dragonGame.getSprite().getColor().a;
+
+		finishHit = Timeline.createSequence() //
+				.beginParallel() //
+				.beginSequence() //
+				.push(Tween.set(eye, GameObjectAccessor.COLOR).target(1.0f, 0.0f, 0.0f, 1.0f)) //
+				.push(Tween.to(eye, GameObjectAccessor.COLOR, 0.5f).target(0.0f, 0.0f, 0.0f, 0.6f).ease(Quad.IN)) //
+				.push(Tween.set(dragonGame, GameObjectAccessor.MOVE_ALPHA).target(x1, y1, a1)) //
+				.push(Tween.to(dragonGame, GameObjectAccessor.MOVE_ALPHA, 1.5f).target(x1, -5.25f, 0.0f).ease(Cubic.INOUT)) //
+				.end() //
+				.push(Tween.set(player, GameObjectAccessor.MOVE_SIZE_ALPHA).target(1.5f, 1.5f, 1.5f, 2.0f, 0.8f)) //
+				.push(Tween.to(player, GameObjectAccessor.MOVE_SIZE_ALPHA, 2.0f).target(11.5f, 1.5f, 1.5f, 2.0f, 0.8f).ease(Linear.INOUT)) //
+				.end() //
+				.repeat(0, 0.0f).delay(0.2f); //
+
+		finishHit.setCallbackTriggers(TweenCallback.END);
+		finishHit.setCallback(new TweenCallback() {
+			@Override
+			public void onEvent(int type, BaseTween<?> source) {
+				state = STATE.CLEAR2;
+				clear.start(tweenManager);
+			}
+		});
+
+		finishHit.start(tweenManager);
+
+		clear = Timeline.createSequence() //
+				.push(Tween.set(whiteBoard, GameObjectAccessor.MOVE).target(15.0f, 7.5f)) //
+				.push(Tween.to(whiteBoard, GameObjectAccessor.MOVE, 0.5f).target(5.0f, 7.5f).ease(Quad.IN)) //
+				.push(Tween.set(player, GameObjectAccessor.MOVE_SIZE).target(5.0f, 5.0f, 1.5f, 2.0f)) //
+				.push(Tween.set(clearMessage, GameObjectAccessor.MOVE_SIZE).target(5.0f, 8.0f, 2.0f, 1.0f)) //
+				.push(Tween.to(player, GameObjectAccessor.MOVE_SIZE, 0.5f).target(5.0f, 5.0f, 1.5f, 2.0f).ease(Quad.IN)) //
+				.push(Tween.to(clearMessage, GameObjectAccessor.MOVE_SIZE, 0.5f).target(5.0f, 9.5f, 7.0f, 3.5f).ease(Quad.IN)) //
+				.push(Tween.set(menu, GameObjectAccessor.MOVE_SIZE).target(2.0f, 6.5f, 1.0f, 1.0f)) //
+				.push(Tween.set(next, GameObjectAccessor.MOVE_SIZE).target(8.0f, 6.5f, 1.0f, 1.0f)) //
+				.beginParallel() //
+				.push(Tween.to(menu, GameObjectAccessor.MOVE_SIZE, 0.5f).target(2.0f, 6.5f, 3.5f, 1.75f).ease(Quad.IN)) //
+				.push(Tween.to(next, GameObjectAccessor.MOVE_SIZE, 0.5f).target(8.0f, 6.5f, 3.5f, 1.75f).ease(Quad.IN)) //
+				.end().repeat(0, 0.0f); //
+
+	}
+
+	private void startNotClear() {
+
+		state = STATE.NOT_CLEAR1;
+
+		Assets.instance.bulletEffect.allowCompletion();
+
+		notClear1 = Timeline.createSequence() //
+				.push(Tween.set(dragonGame, GameObjectAccessor.ALPHA).target(1.0f)) //
+				.push(Tween.set(eye, GameObjectAccessor.ALPHA).target(1.0f)) //
+				.push(Tween.set(player, GameObjectAccessor.MOVE_SIZE_ALPHA).target(1.5f, 1.5f, 1.5f, 2.0f, 0.8f)) //
+				.beginParallel() //
+				.push(Tween.to(dragonGame, GameObjectAccessor.ALPHA, 2.0f).target(0.3f).ease(Linear.INOUT)) //
+				.push(Tween.to(eye, GameObjectAccessor.ALPHA, 2.0f).target(0.3f).ease(Linear.INOUT)) //
+				.push(Tween.to(player, GameObjectAccessor.MOVE_SIZE_ALPHA, 2.0f).target(11.5f, 1.5f, 1.5f, 2.0f, 0.8f).ease(Linear.INOUT)) //
+				.end() //
+				.repeat(0, 0.0f).delay(0.2f); //
+
+		notClear1.setCallbackTriggers(TweenCallback.END);
+		notClear1.setCallback(new TweenCallback() {
+			@Override
+			public void onEvent(int type, BaseTween<?> source) {
+				state = STATE.NOT_CLEAR2;
+				notClear2.start(tweenManager);
+			}
+		});
+
+		notClear1.start(tweenManager);
+
+		notClear2 = Timeline.createSequence() //
+				.push(Tween.set(whiteBoard, GameObjectAccessor.MOVE).target(15.0f, 7.5f)) //
+				.push(Tween.to(whiteBoard, GameObjectAccessor.MOVE, 0.5f).target(5.0f, 7.5f).ease(Quad.IN)) //
+				.push(Tween.set(player, GameObjectAccessor.MOVE_SIZE).target(5.0f, 5.0f, 1.5f, 2.0f)) //
+				.push(Tween.set(notClearMessage, GameObjectAccessor.MOVE_SIZE).target(5.0f, 8.0f, 2.0f, 1.0f)) //
+				.push(Tween.to(player, GameObjectAccessor.MOVE_SIZE, 0.5f).target(5.0f, 5.0f, 1.5f, 2.0f).ease(Quad.IN)) //
+				.push(Tween.to(notClearMessage, GameObjectAccessor.MOVE_SIZE, 0.5f).target(5.0f, 9.5f, 7.0f, 3.5f).ease(Quad.IN)) //
+				.push(Tween.set(menu, GameObjectAccessor.MOVE_SIZE).target(2.0f, 6.5f, 1.0f, 1.0f)) //
+				.push(Tween.set(retry, GameObjectAccessor.MOVE_SIZE).target(7.75f, 6.5f, 1.0f, 1.0f)) //
+				.beginParallel() //
+				.push(Tween.to(menu, GameObjectAccessor.MOVE_SIZE, 0.5f).target(2.0f, 6.5f, 3.5f, 1.75f).ease(Quad.IN)) //
+				.push(Tween.to(retry, GameObjectAccessor.MOVE_SIZE, 0.5f).target(7.75f, 6.5f, 4.0f, 1.75f).ease(Quad.IN)) //
+				.end().repeat(0, 0.0f); //
 
 	}
 }
