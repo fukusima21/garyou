@@ -1,17 +1,17 @@
 package org.netf.garyou.screens;
 
+import org.netf.garyou.garyouMain;
 import org.netf.garyou.game.Assets;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 
 public abstract class AbstractGameScreen implements Screen, InputProcessor {
 
-	protected Game game;
+	protected garyouMain game;
 
-	public AbstractGameScreen(Game game) {
+	public AbstractGameScreen(garyouMain game) {
 		this.game = game;
 	}
 

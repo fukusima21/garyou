@@ -23,10 +23,10 @@ public class GameRenderer implements Disposable {
 	private ShapeRenderer shapeRenderer;
 	private StringBuilder timer;
 
-	private GameController gameController;
+	private GameController controller;
 
-	public GameRenderer(GameController gameController) {
-		this.gameController = gameController;
+	public GameRenderer(GameController controller) {
+		this.controller = controller;
 		init();
 	}
 
@@ -53,7 +53,7 @@ public class GameRenderer implements Disposable {
 
 		renderBackground();
 
-		switch (gameController.getState()) {
+		switch (controller.getState()) {
 		case READY:
 			renderReady();
 			break;
@@ -80,7 +80,7 @@ public class GameRenderer implements Disposable {
 
 		batch.setProjectionMatrix(guiCamera.combined);
 		batch.begin();
-		switch (gameController.getState()) {
+		switch (controller.getState()) {
 		case READY:
 		case MAIN:
 			renderTimer();
@@ -111,7 +111,7 @@ public class GameRenderer implements Disposable {
 
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		shapeRenderer.begin(ShapeType.Line);
-		switch (gameController.getState()) {
+		switch (controller.getState()) {
 		case FIRE:
 			renderGuide();
 			break;
@@ -130,129 +130,129 @@ public class GameRenderer implements Disposable {
 	}
 
 	private void renderBackground() {
-		gameController.back.getSprite().draw(batch);
+		controller.back.getSprite().draw(batch);
 	}
 
 	private void renderReady() {
-		gameController.moon.getSprite().draw(batch);
-		gameController.dragonGame.getSprite().draw(batch);
-		gameController.player.getSprite().draw(batch);
-		gameController.grass3.getSprite().draw(batch);
-		gameController.grass1.getSprite().draw(batch);
+		controller.moon.getSprite().draw(batch);
+		controller.dragonGame.getSprite().draw(batch);
+		controller.player.getSprite().draw(batch);
+		controller.grass3.getSprite().draw(batch);
+		controller.grass1.getSprite().draw(batch);
 	}
 
 	private void renderMain() {
-		gameController.eye.getSprite().draw(batch);
-		gameController.dragonGame.getSprite().draw(batch);
-		gameController.grass3.getSprite().draw(batch);
-		gameController.grass4.getSprite().draw(batch);
-		gameController.player.getSprite().draw(batch);
-		gameController.grass1.getSprite().draw(batch);
-		gameController.grass2.getSprite().draw(batch);
+		controller.eye.getSprite().draw(batch);
+		controller.dragonGame.getSprite().draw(batch);
+		controller.grass3.getSprite().draw(batch);
+		controller.grass4.getSprite().draw(batch);
+		controller.player.getSprite().draw(batch);
+		controller.grass1.getSprite().draw(batch);
+		controller.grass2.getSprite().draw(batch);
 
-		if (gameController.getState() == STATE.FIRE) {
-			gameController.bullet.getSprite().draw(batch);
+		if (controller.getState() == STATE.FIRE) {
+			controller.bullet.getSprite().draw(batch);
 		}
 	}
 
 	private void renderClear1() {
-		gameController.eye.getSprite().draw(batch);
-		gameController.dragonGame.getSprite().draw(batch);
-		gameController.grass3.getSprite().draw(batch);
-		gameController.grass4.getSprite().draw(batch);
-		gameController.player.getSprite().draw(batch);
-		gameController.grass1.getSprite().draw(batch);
-		gameController.grass2.getSprite().draw(batch);
+		controller.eye.getSprite().draw(batch);
+		controller.dragonGame.getSprite().draw(batch);
+		controller.grass3.getSprite().draw(batch);
+		controller.grass4.getSprite().draw(batch);
+		controller.player.getSprite().draw(batch);
+		controller.grass1.getSprite().draw(batch);
+		controller.grass2.getSprite().draw(batch);
 	}
 
 	private void renderClear2() {
 
-		gameController.whiteBoard.getSprite().draw(batch);
+		controller.whiteBoard.getSprite().draw(batch);
 
-		gameController.clearMessage.getSprite().draw(batch);
-		gameController.player.getSprite().draw(batch);
+		controller.clearMessage.getSprite().draw(batch);
+		controller.player.getSprite().draw(batch);
 
-		if (gameController.menu.focused) {
-			Rectangle bounds = gameController.menu.getSprite().getBoundingRectangle();
-			gameController.circle.getSprite().setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
-			gameController.circle.getSprite().setAlpha(0.5f);
-			gameController.circle.getSprite().draw(batch);
+		if (controller.menu.focused) {
+			Rectangle bounds = controller.menu.getSprite().getBoundingRectangle();
+			controller.circle.getSprite().setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
+			controller.circle.getSprite().setAlpha(0.5f);
+			controller.circle.getSprite().draw(batch);
 		}
 
-		if (gameController.next.focused) {
-			Rectangle bounds = gameController.next.getSprite().getBoundingRectangle();
-			gameController.circle.getSprite().setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
-			gameController.circle.getSprite().setAlpha(0.5f);
-			gameController.circle.getSprite().draw(batch);
+		if (controller.next.focused) {
+			Rectangle bounds = controller.next.getSprite().getBoundingRectangle();
+			controller.circle.getSprite().setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
+			controller.circle.getSprite().setAlpha(0.5f);
+			controller.circle.getSprite().draw(batch);
 		}
 
-		if (gameController.finalStage.focused) {
-			Rectangle bounds = gameController.finalStage.getSprite().getBoundingRectangle();
-			gameController.circle.getSprite().setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
-			gameController.circle.getSprite().setAlpha(0.5f);
-			gameController.circle.getSprite().draw(batch);
+		if (controller.finalStage.focused) {
+			Rectangle bounds = controller.finalStage.getSprite().getBoundingRectangle();
+			controller.circle.getSprite().setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
+			controller.circle.getSprite().setAlpha(0.5f);
+			controller.circle.getSprite().draw(batch);
 		}
 
-		gameController.menu.getSprite().draw(batch);
-		gameController.next.getSprite().draw(batch);
-		gameController.finalStage.getSprite().draw(batch);
+		controller.menu.getSprite().draw(batch);
+		controller.next.getSprite().draw(batch);
+		controller.finalStage.getSprite().draw(batch);
 
-		gameController.grass3.getSprite().draw(batch);
-		gameController.grass4.getSprite().draw(batch);
-		gameController.grass1.getSprite().draw(batch);
-		gameController.grass2.getSprite().draw(batch);
+		controller.grass3.getSprite().draw(batch);
+		controller.grass4.getSprite().draw(batch);
+		controller.grass1.getSprite().draw(batch);
+		controller.grass2.getSprite().draw(batch);
 	}
 
 	private void renderNoClear1() {
 
-		gameController.eye.getSprite().draw(batch);
-		gameController.dragonGame.getSprite().draw(batch);
-		gameController.player.getSprite().draw(batch);
+		controller.eye.getSprite().draw(batch);
+		controller.dragonGame.getSprite().draw(batch);
+		controller.player.getSprite().draw(batch);
 
-		gameController.grass3.getSprite().draw(batch);
-		gameController.grass4.getSprite().draw(batch);
-		gameController.grass1.getSprite().draw(batch);
-		gameController.grass2.getSprite().draw(batch);
+		controller.grass3.getSprite().draw(batch);
+		controller.grass4.getSprite().draw(batch);
+		controller.grass1.getSprite().draw(batch);
+		controller.grass2.getSprite().draw(batch);
 
 	}
 
 	private void renderNoClear2() {
 
-		gameController.whiteBoard.getSprite().draw(batch);
+		controller.whiteBoard.getSprite().draw(batch);
 
-		gameController.eye.getSprite().draw(batch);
-		gameController.dragonGame.getSprite().draw(batch);
+		controller.eye.getSprite().draw(batch);
+		controller.dragonGame.getSprite().draw(batch);
 
-		gameController.notClearMessage.getSprite().draw(batch);
-		gameController.player.getSprite().draw(batch);
+		controller.notClearMessage.getSprite().draw(batch);
+		controller.player.getSprite().draw(batch);
 
-		if (gameController.menu.focused) {
-			Rectangle bounds = gameController.menu.getSprite().getBoundingRectangle();
-			gameController.circle.getSprite().setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
-			gameController.circle.getSprite().setAlpha(0.5f);
-			gameController.circle.getSprite().draw(batch);
+		if (controller.menu.focused) {
+			Rectangle bounds = controller.menu.getSprite().getBoundingRectangle();
+			controller.circle.getSprite().setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
+			controller.circle.getSprite().setAlpha(0.5f);
+			controller.circle.getSprite().draw(batch);
 		}
 
-		if (gameController.retry.focused) {
-			Rectangle bounds = gameController.retry.getSprite().getBoundingRectangle();
-			gameController.circle.getSprite().setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
-			gameController.circle.getSprite().setAlpha(0.5f);
-			gameController.circle.getSprite().draw(batch);
+		if (controller.retry.focused) {
+			Rectangle bounds = controller.retry.getSprite().getBoundingRectangle();
+			controller.circle.getSprite().setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
+			controller.circle.getSprite().setAlpha(0.5f);
+			controller.circle.getSprite().draw(batch);
 		}
 
-		gameController.menu.getSprite().draw(batch);
-		gameController.retry.getSprite().draw(batch);
+		controller.menu.getSprite().draw(batch);
+		controller.retry.getSprite().draw(batch);
 
-		gameController.grass3.getSprite().draw(batch);
-		gameController.grass4.getSprite().draw(batch);
-		gameController.grass1.getSprite().draw(batch);
-		gameController.grass2.getSprite().draw(batch);
+		controller.grass3.getSprite().draw(batch);
+		controller.grass4.getSprite().draw(batch);
+		controller.grass1.getSprite().draw(batch);
+		controller.grass2.getSprite().draw(batch);
 
 	}
 
 	private void renderGuide() {
 
-		float[] vertices = gameController.guide.getVertices();
+		float[] vertices = controller.guide.getVertices();
 
 		Gdx.gl.glLineWidth(3.0f);
 
@@ -263,7 +263,7 @@ public class GameRenderer implements Disposable {
 
 	private void renderTimer() {
 
-		int time = MathUtils.floorPositive(gameController.timer * 100.0f);
+		int time = MathUtils.floorPositive(controller.timer * 100.0f);
 
 		if (time < 0) {
 			time = 0;

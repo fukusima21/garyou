@@ -1,11 +1,11 @@
 package org.netf.garyou.screens;
 
+import org.netf.garyou.garyouMain;
 import org.netf.garyou.game.GameController;
 import org.netf.garyou.game.GameController.STATE;
 import org.netf.garyou.game.GameRenderer;
 import org.netf.garyou.util.Constants;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -26,7 +26,7 @@ public class GameScreen extends AbstractGameScreen {
 
 	private MODE mode;
 
-	public GameScreen(Game game, MODE mode) {
+	public GameScreen(garyouMain game, MODE mode) {
 		super(game);
 
 		this.mode = mode;
@@ -98,7 +98,7 @@ public class GameScreen extends AbstractGameScreen {
 					break;
 				}
 			} else if (gameController.finalStage.focused) {
-				// TODO 最終章へ
+				game.setScreen(new FinalScreen(game));
 			}
 		} else if (gameController.getState() == STATE.NOT_CLEAR2) {
 			focus(screenX, screenY);

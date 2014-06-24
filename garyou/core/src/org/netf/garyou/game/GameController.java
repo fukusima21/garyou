@@ -60,7 +60,7 @@ public class GameController extends InputAdapter {
 	private Timeline foreground2;
 	private Timeline fire;
 
-	private GameTimelines gameTimelines;
+	private GameTimelines timelines;
 
 	public MODE mode;
 
@@ -82,6 +82,11 @@ public class GameController extends InputAdapter {
 		state = STATE.READY;
 		timer = 30.0f;
 		stateTime = 0f;
+
+		tweenManager = new TweenManager();
+
+		Tween.registerAccessor(GameObject.class, new GameObjectAccessor());
+		Tween.setCombinedAttributesLimit(5);
 
 		dragonGame = new GameObject(Assets.instance.dragonGame, 5.0f, 15.0f, 10.0f, 15.0f);
 		moon = new GameObject(Assets.instance.moon, 7.0f, 11.5f, 4.0f, 4.0f);
@@ -125,14 +130,9 @@ public class GameController extends InputAdapter {
 
 		guide = new Polyline(new float[4]);
 
-		tweenManager = new TweenManager();
+		timelines = new GameTimelines(this);
 
-		Tween.registerAccessor(GameObject.class, new GameObjectAccessor());
-		Tween.setCombinedAttributesLimit(5);
-
-		gameTimelines = new GameTimelines(this);
-
-		ready = gameTimelines.createReady();
+		ready = timelines.createReady();
 
 		ready.setCallback(new TweenCallback() {
 			@Override
@@ -144,15 +144,15 @@ public class GameController extends InputAdapter {
 				foreground1.start(tweenManager);
 				foreground2.start(tweenManager);
 			}
-		}).setCallbackTriggers(TweenCallback.END) //
-				.start(tweenManager);
+		}).setCallbackTriggers(TweenCallback.END); //
+		ready.start(tweenManager);
 
-		main = gameTimelines.createMain();
+		main = timelines.createMain();
 
-		foreground1 = gameTimelines.createForeground1();
-		foreground2 = gameTimelines.createForeground2();
+		foreground1 = timelines.createForeground1();
+		foreground2 = timelines.createForeground2();
 
-		background = gameTimelines.createBackground();
+		background = timelines.createBackground();
 		background.setCallback(new TweenCallback() {
 			@Override
 			public void onEvent(int type, BaseTween<?> source) {
@@ -275,7 +275,7 @@ public class GameController extends InputAdapter {
 		vertices[2] = 15.0f * MathUtils.cos(rad1) + x1;
 		vertices[3] = 15.0f * MathUtils.sin(rad1) + y1;
 
-		fire = gameTimelines.createFire(x1, y1, x2, y2);
+		fire = timelines.createFire(x1, y1, x2, y2);
 
 		fire.setCallback(new TweenCallback() {
 			@Override
@@ -305,13 +305,13 @@ public class GameController extends InputAdapter {
 		float y1 = dragonGame.getSprite().getY() + dragonGame.getSprite().getHeight() / 2.0f;
 		float a1 = dragonGame.getSprite().getColor().a;
 
-		Timeline timeline = gameTimelines.createClear1(x1, y1, a1);
+		Timeline timeline = timelines.createClear1(x1, y1, a1);
 		timeline.setCallbackTriggers(TweenCallback.END);
 		timeline.setCallback(new TweenCallback() {
 			@Override
 			public void onEvent(int type, BaseTween<?> source) {
 				state = STATE.CLEAR2;
-				gameTimelines.createClear2().start(tweenManager);
+				timelines.createClear2().start(tweenManager);
 			}
 		});
 
@@ -325,7 +325,7 @@ public class GameController extends InputAdapter {
 
 		Assets.instance.bulletEffect.allowCompletion();
 
-		Timeline timeline = gameTimelines.createNotClear1();
+		Timeline timeline = timelines.createNotClear1();
 
 		timeline.setCallbackTriggers(TweenCallback.END);
 
@@ -333,7 +333,7 @@ public class GameController extends InputAdapter {
 			@Override
 			public void onEvent(int type, BaseTween<?> source) {
 				state = STATE.NOT_CLEAR2;
-				gameTimelines.createNotClear2().start(tweenManager);
+				timelines.createNotClear2().start(tweenManager);
 			}
 		});
 

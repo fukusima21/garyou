@@ -69,6 +69,9 @@ public class Assets implements Disposable, AssetErrorListener {
 	public Sprite retry;
 	public Sprite finalStage;
 
+	public Sprite guard;
+	private Texture guardTexture;
+
 	private Assets() {
 	}
 
@@ -147,7 +150,7 @@ public class Assets implements Disposable, AssetErrorListener {
 		notClear = atlas.createSprite("notclear");
 		shout = atlas.createSprite("shout");
 
-		Pixmap whitePixmap = new Pixmap(64, 64, Format.RGBA8888);
+		Pixmap whitePixmap = new Pixmap(64, 64, Format.RGBA4444);
 		whitePixmap.setColor(0xe7 / 255.0f, 0xe3 / 255.0f, 0xc8 / 255.0f, 1.0f);
 		whitePixmap.fillRectangle(0, 0, 64, 64);
 		whiteTexture = new Texture(whitePixmap);
@@ -159,6 +162,13 @@ public class Assets implements Disposable, AssetErrorListener {
 		menu = atlas.createSprite("return");
 		retry = atlas.createSprite("retry");
 		finalStage = atlas.createSprite("final");
+
+		Pixmap guardPixmap = new Pixmap(128, 128, Format.RGBA4444);
+		guardPixmap.setColor(0.0f, 0.0f, 1.0f, 1.0f);
+		guardPixmap.fillCircle(63, 63, 63);
+		guardTexture = new Texture(guardPixmap);
+		guard = new Sprite(guardTexture);
+		guardPixmap.dispose();
 
 	}
 
@@ -173,6 +183,7 @@ public class Assets implements Disposable, AssetErrorListener {
 		circleTexture.dispose();
 		eyeTexture.dispose();
 		whiteTexture.dispose();
+		guardTexture.dispose();
 	}
 
 }

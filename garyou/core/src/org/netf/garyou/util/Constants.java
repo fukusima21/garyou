@@ -11,4 +11,7 @@ public class Constants {
 	public static final float FIRST_BULLET_X = 2.25f;
 	public static final float FIRST_BULLET_Y = 2.0f;
 
+	public static final float OUT_OF_X = 100.0f;
+	public static final float OUT_OF_Y = 100.0f;
+
 }

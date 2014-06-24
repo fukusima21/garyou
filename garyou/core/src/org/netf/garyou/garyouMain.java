@@ -8,6 +8,16 @@ import com.badlogic.gdx.assets.AssetManager;
 
 public class garyouMain extends Game {
 
+	public WebRtcResolver webRtcResolver;
+
+	public garyouMain() {
+		webRtcResolver = null;
+	}
+
+	public garyouMain(WebRtcResolver webRtcResolver) {
+		this.webRtcResolver = webRtcResolver;
+	}
+
 	@Override
 	public void create() {
 		Assets.instance.init(new AssetManager());

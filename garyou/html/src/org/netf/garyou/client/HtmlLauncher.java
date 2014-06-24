@@ -1,7 +1,5 @@
 package org.netf.garyou.client;
 
-import javax.jws.soap.SOAPBinding.Style;
-
 import org.netf.garyou.garyouMain;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -44,11 +42,10 @@ public class HtmlLauncher extends GwtApplication {
 	public ApplicationListener getApplicationListener() {
 
 		instance = this;
-		setLogLevel(LOG_NONE);
+		setLogLevel(LOG_DEBUG);
 		setLoadingListener(new LoadingListener() {
 			@Override
 			public void beforeSetup() {
-
 			}
 
 			@Override
@@ -58,7 +55,11 @@ public class HtmlLauncher extends GwtApplication {
 			}
 		});
 
-		return new garyouMain();
+		WebRtcResolverImpl webRtcResolver = new WebRtcResolverImpl();
+
+		webRtcResolver.setup();
+
+		return new garyouMain(webRtcResolver);
 	}
 
 	private void scaleCanvas() {

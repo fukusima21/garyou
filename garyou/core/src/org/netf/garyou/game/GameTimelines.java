@@ -102,8 +102,8 @@ public class GameTimelines {
 				.push(Tween.set(controller.grass1, GameObjectAccessor.MOVE).target(5.0f, 1.25f)) //
 				.push(Tween.set(controller.grass2, GameObjectAccessor.MOVE).target(15.0f, 1.25f)) //
 				.beginParallel() //
-				.push(Tween.to(controller.grass1, GameObjectAccessor.MOVE, 2.0f).target(-5.0f, 1.25f).ease(Linear.INOUT)) //
-				.push(Tween.to(controller.grass2, GameObjectAccessor.MOVE, 2.0f).target(5.0f, 1.25f).ease(Linear.INOUT)) //
+				.push(Tween.to(controller.grass1, GameObjectAccessor.MOVE, 1.0f).target(-5.0f, 1.25f).ease(Linear.INOUT)) //
+				.push(Tween.to(controller.grass2, GameObjectAccessor.MOVE, 1.0f).target(5.0f, 1.25f).ease(Linear.INOUT)) //
 				.end() //
 				.repeat(-1, 0.0f);
 
@@ -116,8 +116,8 @@ public class GameTimelines {
 				.push(Tween.set(controller.grass3, GameObjectAccessor.MOVE).target(5.0f, 1.25f)) //
 				.push(Tween.set(controller.grass4, GameObjectAccessor.MOVE).target(15.0f, 1.25f)) //
 				.beginParallel() //
-				.push(Tween.to(controller.grass3, GameObjectAccessor.MOVE, 4.0f).target(-5.0f, 1.25f).ease(Linear.INOUT)) //
-				.push(Tween.to(controller.grass4, GameObjectAccessor.MOVE, 4.0f).target(5.0f, 1.25f).ease(Linear.INOUT)) //
+				.push(Tween.to(controller.grass3, GameObjectAccessor.MOVE, 2.0f).target(-5.0f, 1.25f).ease(Linear.INOUT)) //
+				.push(Tween.to(controller.grass4, GameObjectAccessor.MOVE, 2.0f).target(5.0f, 1.25f).ease(Linear.INOUT)) //
 				.end() //
 				.repeat(-1, 0.0f);
 

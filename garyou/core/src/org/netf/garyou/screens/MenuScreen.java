@@ -1,11 +1,11 @@
 package org.netf.garyou.screens;
 
+import org.netf.garyou.garyouMain;
 import org.netf.garyou.game.MenuController;
 import org.netf.garyou.game.MenuController.STATE;
 import org.netf.garyou.game.MenuRenderer;
 import org.netf.garyou.util.Constants;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
@@ -21,7 +21,7 @@ public class MenuScreen extends AbstractGameScreen implements InputProcessor {
 	private OrthographicCamera camera;
 	private Vector3 touchPoint;
 
-	public MenuScreen(Game game) {
+	public MenuScreen(garyouMain game) {
 
 		super(game);
 
@@ -70,7 +70,14 @@ public class MenuScreen extends AbstractGameScreen implements InputProcessor {
 			} else if (menuController.normal.isHit(touchPoint.x, touchPoint.y)) {
 				game.setScreen(new GameScreen(game, GameScreen.MODE.NORMAL));
 			} else if (menuController.hard.isHit(touchPoint.x, touchPoint.y)) {
-				game.setScreen(new GameScreen(game, GameScreen.MODE.HARD));
+
+				// game.setScreen(new GameScreen(game, GameScreen.MODE.HARD));
+				game.setScreen(new FinalScreen(game));
+
+			} else {
+				if (game.webRtcResolver != null) {
+					Gdx.app.log(TAG, game.webRtcResolver.getidList().toString());
+				}
 			}
 		}
 
