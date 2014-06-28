@@ -158,6 +158,7 @@ public class Assets implements Disposable, AssetErrorListener {
 		whitePixmap.dispose();
 
 		logo5jcup = atlas.createSprite("logo_5jcup");
+
 		next = atlas.createSprite("next");
 		menu = atlas.createSprite("return");
 		retry = atlas.createSprite("retry");

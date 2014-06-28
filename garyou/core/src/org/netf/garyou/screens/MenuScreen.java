@@ -76,7 +76,7 @@ public class MenuScreen extends AbstractGameScreen implements InputProcessor {
 
 			} else {
 				if (game.webRtcResolver != null) {
-					Gdx.app.log(TAG, game.webRtcResolver.getidList().toString());
+					game.webRtcResolver.sendMessage("aaaaaaaaaaaaaa");
 				}
 			}
 		}

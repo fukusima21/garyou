@@ -64,6 +64,7 @@ public class MenuRenderer implements Disposable {
 			menuController.circle.getSprite().draw(batch);
 		}
 		menuController.hard.getSprite().draw(batch);
+
 		batch.end();
 
 	}
