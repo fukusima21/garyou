@@ -18,8 +18,9 @@ allprojects {
     version = '1.0'
     ext {
         appName = 'garyou'
-        gdxVersion = '1.1.0'
+        gdxVersion = '1.2.0'
         roboVMVersion = '0.0.12'
+        appengineVersion = '1.9.5'
     }
 
     repositories {
@@ -32,7 +33,6 @@ allprojects {
 
 project(":desktop") {
     apply plugin: "java"
-
 
     dependencies {
         compile project(":core")
@@ -74,13 +74,26 @@ project(":html") {
     apply plugin: "gwt"
     apply plugin: "war"
 
-
     dependencies {
         compile project(":core")
         compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
         compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
+        compile 'no.eirikb:gwt-channel-api:0.3'
     }
+}
+
+project(":server") {
+    apply plugin: "war"
+
+    dependencies {
+        compile project(":html")
+        providedCompile 'javax.servlet:servlet-api:2.5'
+        compile 'com.google.appengine:appengine-api-1.0-sdk:$appengineVersion'
+        compile 'no.eirikb:gwt-channel-api:0.3'
+        compile 'com.google.gwt:gwt-user:2.6.1'
+    }
+
 }
 
 project(":core") {
