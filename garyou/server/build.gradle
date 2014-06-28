@@ -1,0 +1,24 @@
+apply plugin: "java"
+apply plugin: "appengine"
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.google.appengine:gradle-appengine-plugin:1.9.5'
+     }
+}
+
+sourceCompatibility = 1.7
+
+sourceSets.main.java.srcDirs = [ "src/" ]
+
+eclipse.project {
+    name = appName + "-server"
+}
+
+def encoding = { it.encoding = "UTF-8" }
+tasks.withType(AbstractCompile) each { encoding it.options }
+
