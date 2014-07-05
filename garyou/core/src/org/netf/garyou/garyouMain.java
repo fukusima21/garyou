@@ -2,6 +2,7 @@ package org.netf.garyou;
 
 import org.netf.garyou.game.Assets;
 import org.netf.garyou.screens.MenuScreen;
+import org.netf.garyou.screens.VsScreen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
@@ -21,7 +22,16 @@ public class garyouMain extends Game {
 	@Override
 	public void create() {
 		Assets.instance.init(new AssetManager());
+
+		if (webRtcResolver != null) {
+			if (!webRtcResolver.isPlayer1()) {
+				setScreen(new VsScreen(this));
+				return;
+			}
+		}
+
 		setScreen(new MenuScreen(this));
+
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package org.netf.garyou.screens;
 
+import org.netf.garyou.WebRtcResolver;
 import org.netf.garyou.garyouMain;
 import org.netf.garyou.game.MenuController;
 import org.netf.garyou.game.MenuController.STATE;
@@ -60,7 +61,7 @@ public class MenuScreen extends AbstractGameScreen implements InputProcessor {
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 
-		if (menuController.state == STATE.MAIN) {
+		if (menuController.getState() == STATE.MAIN) {
 
 			touchPoint.set(screenX, screenY, 0);
 			camera.unproject(touchPoint);
@@ -70,15 +71,14 @@ public class MenuScreen extends AbstractGameScreen implements InputProcessor {
 			} else if (menuController.normal.isHit(touchPoint.x, touchPoint.y)) {
 				game.setScreen(new GameScreen(game, GameScreen.MODE.NORMAL));
 			} else if (menuController.hard.isHit(touchPoint.x, touchPoint.y)) {
-
-				// game.setScreen(new GameScreen(game, GameScreen.MODE.HARD));
-				game.setScreen(new FinalScreen(game));
-
-			} else {
-				if (game.webRtcResolver != null) {
-					game.webRtcResolver.sendMessage("aaaaaaaaaaaaaa");
-				}
+				game.setScreen(new GameScreen(game, GameScreen.MODE.HARD));
+			} else if (menuController.asobikataBtn.isHit(touchPoint.x, touchPoint.y)) {
+				menuController.startAsobikata();
+			} else if (menuController.taiketsu.isHit(touchPoint.x, touchPoint.y)) {
+				game.setScreen(new VsScreen(game));
 			}
+		} else if (menuController.getState() == STATE.MAIN_A) {
+			menuController.backMenu();
 		}
 
 		return true;
@@ -98,7 +98,7 @@ public class MenuScreen extends AbstractGameScreen implements InputProcessor {
 
 	private void focus(int screenX, int screenY) {
 
-		if (menuController.state == STATE.MAIN) {
+		if (menuController.getState() == STATE.MAIN) {
 
 			touchPoint.set(screenX, screenY, 0);
 			camera.unproject(touchPoint);
@@ -119,6 +119,18 @@ public class MenuScreen extends AbstractGameScreen implements InputProcessor {
 				menuController.hard.focused = true;
 			} else {
 				menuController.hard.focused = false;
+			}
+
+			if (menuController.asobikataBtn.isHit(touchPoint.x, touchPoint.y)) {
+				menuController.asobikataBtn.focused = true;
+			} else {
+				menuController.asobikataBtn.focused = false;
+			}
+
+			if (menuController.taiketsu.isHit(touchPoint.x, touchPoint.y)) {
+				menuController.taiketsu.focused = true;
+			} else {
+				menuController.taiketsu.focused = false;
 			}
 		}
 

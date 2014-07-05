@@ -2,6 +2,7 @@ package org.netf.garyou.game;
 
 import org.netf.garyou.game.FinalController.STATE;
 import org.netf.garyou.util.Constants;
+import org.netf.garyou.util.GaryouUtil;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -9,8 +10,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 
 public class FinalRenderer implements Disposable {
@@ -20,6 +21,7 @@ public class FinalRenderer implements Disposable {
 	private SpriteBatch batch;
 	private ShapeRenderer shapeRenderer;
 	private StringBuilder timer;
+	private Vector2 camPos;
 
 	private FinalController controller;
 
@@ -40,9 +42,18 @@ public class FinalRenderer implements Disposable {
 		guiCamera.position.set(Constants.VIEWPORT_GUI_WIDTH / 2, Constants.VIEWPORT_GUI_HEIGHT / 2, 0);
 
 		timer = new StringBuilder("00.00");
+
+		camPos = new Vector2();
 	}
 
 	public void render() {
+
+		Rectangle bounds = controller.center.getSprite().getBoundingRectangle();
+
+		bounds.getCenter(camPos);
+
+		camera.position.set(camPos.x, camPos.y, 0);
+
 		camera.update();
 		guiCamera.update();
 
@@ -63,6 +74,8 @@ public class FinalRenderer implements Disposable {
 			renderClear1();
 			break;
 		case CLEAR2:
+		case CLEAR3:
+			renderClear2();
 			break;
 		case NOT_CLEAR1:
 			renderNoClear1();
@@ -92,6 +105,7 @@ public class FinalRenderer implements Disposable {
 			renderHitPartcle();
 			break;
 		case CLEAR2:
+		case CLEAR3:
 			renderTimer();
 		case NOT_CLEAR1:
 		case NOT_CLEAR2:
@@ -133,6 +147,15 @@ public class FinalRenderer implements Disposable {
 	}
 
 	private void renderClear2() {
+		controller.grass3.getSprite().draw(batch);
+		controller.grass4.getSprite().draw(batch);
+		controller.grass1.getSprite().draw(batch);
+		controller.grass2.getSprite().draw(batch);
+
+		controller.whiteBoard.getSprite().draw(batch);
+
+		controller.kan.getSprite().draw(batch);
+
 	}
 
 	private void renderNoClear1() {
@@ -217,16 +240,8 @@ public class FinalRenderer implements Disposable {
 	}
 
 	private void renderTimer() {
-		int time = MathUtils.floorPositive(controller.timer * 100.0f);
 
-		if (time < 0) {
-			time = 0;
-		}
-
-		timer.setCharAt(0, time / 1000 == 0 ? ' ' : (char) ('0' + (time / 1000)));
-		timer.setCharAt(1, (char) ('0' + (time % 1000) / 100));
-		timer.setCharAt(3, (char) ('0' + (time % 100) / 10));
-		timer.setCharAt(4, (char) ('0' + (time % 10)));
+		StringBuilder timer = GaryouUtil.floatToString(controller.timer);
 
 		Assets.instance.bitmapFont.setScale(1.0f);
 		Assets.instance.bitmapFont.setColor(0.0f, 0.0f, 1.0f, 1.0f);
@@ -250,6 +265,11 @@ public class FinalRenderer implements Disposable {
 
 	private void renderBackground() {
 		controller.moon.getSprite().draw(batch);
+
+		for (int i = 0; i < controller.cloud.length; i++) {
+			controller.cloud[i].getSprite().draw(batch);
+		}
+
 	}
 
 	private void renderMain() {

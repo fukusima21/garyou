@@ -1,7 +1,6 @@
 package org.netf.garyou.game;
 
 import org.netf.garyou.accessors.GameObjectAccessor;
-import org.netf.garyou.game.GameController.STATE;
 import org.netf.garyou.game.objects.base.GameObject;
 import org.netf.garyou.util.Constants;
 
@@ -11,6 +10,7 @@ import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenManager;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polyline;
@@ -33,16 +33,21 @@ public class FinalController {
 	public GameObject eye;
 	public GameObject bullet;
 	public GameObject circle;
+	public GameObject center;
 
 	public GameObject notClearMessage;
 	public GameObject whiteBoard;
 	public GameObject menu;
 	public GameObject retry;
 
+	public GameObject kan;
+
+	public GameObject[] cloud;
+
 	public Polyline guide;
 
 	public static enum STATE {
-		NULL, READY, MAIN, FIRE, CLEAR1, CLEAR2, NOT_CLEAR1, NOT_CLEAR2
+		NULL, READY, MAIN, FIRE, CLEAR1, CLEAR2, CLEAR3, NOT_CLEAR1, NOT_CLEAR2
 	}
 
 	public float timer;
@@ -56,6 +61,7 @@ public class FinalController {
 	private Timeline foreground2;
 	private Timeline guardT;
 	private Timeline fire;
+	private Timeline cameraT;
 
 	private STATE state;
 
@@ -93,6 +99,8 @@ public class FinalController {
 			guards[i] = new GameObject(new Sprite(Assets.instance.guard), Constants.OUT_OF_X, Constants.OUT_OF_Y, 0.4f, 0.4f);
 		}
 
+		center = new GameObject(new Sprite(Assets.instance.guard), 5.0f, 7.5f, 0.4f, 0.4f);
+
 		player = new GameObject((Sprite) Assets.instance.player.getKeyFrame(0), -1.25f, 1.5f, 1.5f, 2.0f);
 		grass1 = new GameObject(Assets.instance.grass1, 5.0f, 1.25f, 10.0f, 2.5f);
 		grass2 = new GameObject(Assets.instance.grass2, 15.0f, 1.25f, 10.0f, 2.5f);
@@ -111,6 +119,8 @@ public class FinalController {
 		retry = new GameObject(Assets.instance.retry, 15.0f, 7.5f, 3.5f, 1.75f);
 
 		circle = new GameObject(Assets.instance.circle, 2.0f, 2.0f, 4.0f, 4.0f, 0.5f);
+
+		kan = new GameObject(Assets.instance.kan, 15.0f, 7.5f, 3.0f, 3.0f);
 
 		guide = new Polyline(new float[4]);
 
@@ -136,6 +146,25 @@ public class FinalController {
 		foreground1 = timelines.createForeground1();
 		foreground2 = timelines.createForeground2();
 
+		initCloud();
+	}
+
+	private void initCloud() {
+
+		cloud = new GameObject[10];
+
+		for (int i = 0; i < 5; i++) {
+			float x = MathUtils.random(10.0f);
+			float y = MathUtils.random(5.0f, 15.0f);
+			cloud[i] = new GameObject(new Sprite(Assets.instance.cloud1), x, y, 6.0f, 2.0f);
+		}
+
+		for (int i = 5; i < 10; i++) {
+			float x = MathUtils.random(10.0f);
+			float y = MathUtils.random(5.0f, 15.0f);
+			cloud[i] = new GameObject(new Sprite(Assets.instance.cloud2), x, y, 6.0f, 2.0f);
+		}
+
 	}
 
 	public void update(float deltaTime) {
@@ -147,6 +176,8 @@ public class FinalController {
 			updateGuardPosition();
 			updateEyePosition();
 		}
+
+		updateCloudPosition();
 
 		if (state == STATE.MAIN || state == STATE.FIRE) {
 			timer = timer - deltaTime;
@@ -169,6 +200,30 @@ public class FinalController {
 		stateTime = stateTime + deltaTime;
 		Sprite keyFrame = (Sprite) Assets.instance.player.getKeyFrame(stateTime, true);
 		player.setSprite(keyFrame);
+
+	}
+
+	private void updateCloudPosition() {
+
+		float time = Gdx.graphics.getDeltaTime();
+
+		for (int i = 0; i < cloud.length; i++) {
+
+			float x = cloud[i].getSprite().getX();
+
+			if (i < 5) {
+				x = x - 10.0f * time;
+			} else {
+				x = x - 5.0f * time;
+			}
+
+			cloud[i].getSprite().setX(x);
+
+			if (x < -6.0f) {
+				float y = MathUtils.random(5.0f, 15.0f);
+				cloud[i].getSprite().setCenter(13.0f, y);
+			}
+		}
 
 	}
 
@@ -242,23 +297,32 @@ public class FinalController {
 		, y * Constants.VIEWPORT_GUI_HEIGHT / Constants.VIEWPORT_HEIGHT);
 		Assets.instance.hitEffect.start();
 
-		// float x1 = dragonGame.getSprite().getX() +
-		// dragonGame.getSprite().getWidth() / 2.0f;
-		// float y1 = dragonGame.getSprite().getY() +
-		// dragonGame.getSprite().getHeight() / 2.0f;
-		// float a1 = dragonGame.getSprite().getColor().a;
-		//
-		// Timeline timeline = timelines.createClear1(x1, y1, a1);
-		// timeline.setCallbackTriggers(TweenCallback.END);
-		// timeline.setCallback(new TweenCallback() {
-		// @Override
-		// public void onEvent(int type, BaseTween<?> source) {
-		// state = STATE.CLEAR2;
-		// timelines.createClear2().start(tweenManager);
-		// }
-		// });
-		//
-		// timeline.start(tweenManager);
+		float x1 = dragonGame.getSprite().getX() + dragonGame.getSprite().getWidth() / 2.0f;
+		float y1 = dragonGame.getSprite().getY() + dragonGame.getSprite().getHeight() / 2.0f;
+		float a1 = dragonGame.getSprite().getColor().a;
+
+		Timeline timeline = timelines.createClear1(x1, y1, a1);
+		timeline.setCallbackTriggers(TweenCallback.END);
+
+		timeline.setCallback(new TweenCallback() {
+			@Override
+			public void onEvent(int type, BaseTween<?> source) {
+				state = STATE.CLEAR2;
+				timelines.createClear2() //
+						.setCallbackTriggers(TweenCallback.END) //
+						.setCallback(new TweenCallback() {
+							@Override
+							public void onEvent(int type, BaseTween<?> source) {
+								state = STATE.CLEAR3;
+							}
+						}).start(tweenManager);
+			}
+		});
+
+		timeline.start(tweenManager);
+
+		cameraT = timelines.createCameraT();
+		cameraT.start(tweenManager);
 
 	}
 

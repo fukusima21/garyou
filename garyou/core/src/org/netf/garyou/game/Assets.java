@@ -48,6 +48,8 @@ public class Assets implements Disposable, AssetErrorListener {
 	public Sprite grass4;
 
 	public Animation player;
+	public Animation player1;
+	public Animation player2;
 
 	public ParticleEffect bulletEffect;
 	public ParticleEffect hitEffect;
@@ -71,6 +73,25 @@ public class Assets implements Disposable, AssetErrorListener {
 
 	public Sprite guard;
 	private Texture guardTexture;
+
+	public Sprite asobikata;
+	public Sprite asobikataBtn;
+
+	public Sprite cloud1;
+	public Sprite cloud2;
+
+	public Sprite kan;
+	public Sprite taiketsu;
+
+	public Sprite win;
+	public Sprite lose;
+	public Sprite draw;
+
+	public Sprite one;
+	public Sprite two;
+	public Sprite three;
+	public Sprite start;
+	public Sprite connect;
 
 	private Assets() {
 	}
@@ -126,6 +147,9 @@ public class Assets implements Disposable, AssetErrorListener {
 
 		player = new Animation(0.04f, atlas.createSprites("run"));
 
+		player1 = new Animation(0.04f, atlas.createSprites("run"));
+		player2 = new Animation(0.04f, atlas.createSprites("run"));
+
 		grass1 = atlas.createSprite("grass");
 		grass2 = atlas.createSprite("grass");
 		grass3 = atlas.createSprite("grass");
@@ -170,6 +194,25 @@ public class Assets implements Disposable, AssetErrorListener {
 		guardTexture = new Texture(guardPixmap);
 		guard = new Sprite(guardTexture);
 		guardPixmap.dispose();
+
+		asobikata = atlas.createSprite("asobikata");
+		asobikataBtn = atlas.createSprite("asobikata_btn");
+
+		cloud1 = atlas.createSprite("cloud1");
+		cloud2 = atlas.createSprite("cloud2");
+
+		kan = atlas.createSprite("kan");
+		taiketsu = atlas.createSprite("taiketsu");
+
+		win = atlas.createSprite("win");
+		lose = atlas.createSprite("lose");
+		draw = atlas.createSprite("draw");
+
+		one = atlas.createSprite("one");
+		two = atlas.createSprite("two");
+		three = atlas.createSprite("three");
+		start = atlas.createSprite("start");
+		connect = atlas.createSprite("connect");
 
 	}
 

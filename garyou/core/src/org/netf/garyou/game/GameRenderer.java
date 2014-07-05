@@ -2,6 +2,7 @@ package org.netf.garyou.game;
 
 import org.netf.garyou.game.GameController.STATE;
 import org.netf.garyou.util.Constants;
+import org.netf.garyou.util.GaryouUtil;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -9,7 +10,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Disposable;
 
@@ -263,16 +263,7 @@ public class GameRenderer implements Disposable {
 
 	private void renderTimer() {
 
-		int time = MathUtils.floorPositive(controller.timer * 100.0f);
-
-		if (time < 0) {
-			time = 0;
-		}
-
-		timer.setCharAt(0, time / 1000 == 0 ? ' ' : (char) ('0' + (time / 1000)));
-		timer.setCharAt(1, (char) ('0' + (time % 1000) / 100));
-		timer.setCharAt(3, (char) ('0' + (time % 100) / 10));
-		timer.setCharAt(4, (char) ('0' + (time % 10)));
+		StringBuilder timer = GaryouUtil.floatToString(controller.timer);
 
 		Assets.instance.bitmapFont.setScale(1.0f);
 		Assets.instance.bitmapFont.setColor(0.0f, 0.0f, 1.0f, 1.0f);

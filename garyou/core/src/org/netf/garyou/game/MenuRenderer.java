@@ -1,5 +1,6 @@
 package org.netf.garyou.game;
 
+import org.netf.garyou.game.MenuController.STATE;
 import org.netf.garyou.util.Constants;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -23,13 +24,16 @@ public class MenuRenderer implements Disposable {
 
 	private void init() {
 		batch = new SpriteBatch();
+
 		camera = new OrthographicCamera(Constants.VIEWPORT_WIDTH, Constants.VIEWPORT_HEIGHT);
 		camera.position.set(Constants.VIEWPORT_WIDTH / 2, Constants.VIEWPORT_HEIGHT / 2, 0);
+
 	}
 
 	public void render() {
 
 		camera.update();
+
 		batch.setProjectionMatrix(camera.combined);
 
 		batch.begin();
@@ -64,6 +68,31 @@ public class MenuRenderer implements Disposable {
 			menuController.circle.getSprite().draw(batch);
 		}
 		menuController.hard.getSprite().draw(batch);
+
+		if (menuController.asobikataBtn.focused) {
+			Rectangle bounds = menuController.asobikataBtn.getSprite().getBoundingRectangle();
+			menuController.circle.getSprite().setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
+			menuController.circle.getSprite().setAlpha(0.5f);
+			menuController.circle.getSprite().draw(batch);
+		}
+		menuController.asobikataBtn.getSprite().draw(batch);
+
+		if (menuController.taiketsu.focused) {
+			Rectangle bounds = menuController.taiketsu.getSprite().getBoundingRectangle();
+			menuController.circle.getSprite().setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
+			menuController.circle.getSprite().setAlpha(0.5f);
+			menuController.circle.getSprite().draw(batch);
+		}
+		menuController.taiketsu.getSprite().draw(batch);
+
+		if (menuController.getState() == STATE.READY_A //
+				|| menuController.getState() == STATE.MAIN_A) {
+			menuController.asobikata.getSprite().draw(batch);
+		}
+
+		if (menuController.getState() == STATE.MAIN_A) {
+			menuController.bullet.getSprite().draw(batch);
+		}
 
 		batch.end();
 

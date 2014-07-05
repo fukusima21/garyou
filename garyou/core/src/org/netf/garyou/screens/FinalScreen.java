@@ -85,6 +85,8 @@ public class FinalScreen extends AbstractGameScreen {
 				finalController.init();
 			}
 
+		} else if (finalController.getState() == STATE.CLEAR3) {
+			game.setScreen(new MenuScreen(game));
 		}
 
 		return true;

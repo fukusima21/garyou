@@ -102,7 +102,6 @@ public class GameScreen extends AbstractGameScreen {
 			}
 		} else if (gameController.getState() == STATE.NOT_CLEAR2) {
 			focus(screenX, screenY);
-
 			if (gameController.menu.focused) {
 				game.setScreen(new MenuScreen(game));
 			} else if (gameController.retry.focused) {

@@ -17,6 +17,7 @@ public class GameObjectAccessor implements TweenAccessor<GameObject> {
 	public static final int ROTATE = 6;
 	public static final int MOVE_ALPHA = 7;
 	public static final int COLOR = 8;
+	public static final int MOVE_X = 9;
 
 	@Override
 	public int getValues(GameObject target, int tweenType, float[] returnValues) {
@@ -66,6 +67,9 @@ public class GameObjectAccessor implements TweenAccessor<GameObject> {
 			returnValues[1] = target.getSprite().getColor().g;
 			returnValues[2] = target.getSprite().getColor().b;
 			return 3;
+		case MOVE_X:
+			returnValues[0] = bounds.x + bounds.width / 2.0f;
+			return 1;
 		default:
 			break;
 		}
@@ -108,6 +112,9 @@ public class GameObjectAccessor implements TweenAccessor<GameObject> {
 			break;
 		case COLOR:
 			target.getSprite().setColor(newValues[0], newValues[1], newValues[2], target.getSprite().getColor().a);
+			break;
+		case MOVE_X:
+			target.getSprite().setCenterX(newValues[0]);
 			break;
 		default:
 			break;
