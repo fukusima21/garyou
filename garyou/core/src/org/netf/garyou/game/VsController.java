@@ -65,6 +65,12 @@ public class VsController {
 
 	private STATE_PLAYER2 statePlayer2;
 
+	public static enum MODE {
+		EASY, NORMAL, HARD
+	};
+
+	private MODE mode;
+
 	public float timer;
 	public float timerPlayer2;
 
@@ -99,10 +105,10 @@ public class VsController {
 
 	public VsController(WebRtcResolver webRtcResolver) {
 		this.webRtcResolver = webRtcResolver;
-		init(false);
+		init(false, -1);
 	}
 
-	public void init(final boolean isRetry) {
+	public void init(final boolean isRetry, final int stage) {
 
 		state = STATE.READY;
 		timer = 30.0f;
@@ -159,7 +165,8 @@ public class VsController {
 			public void onEvent(int type, BaseTween<?> source) {
 
 				if (isRetry) {
-					startSync();
+					state = STATE.WAIT;
+					startSync(stage);
 				} else {
 					state = STATE.WAIT;
 					if (webRtcResolver.isPlayer1()) {
@@ -178,6 +185,24 @@ public class VsController {
 
 		foreground1 = timelines.createForeground1();
 		foreground2 = timelines.createForeground2();
+
+		clear1 = timelines.createClear1() //
+				.setCallbackTriggers(TweenCallback.END) //
+				.setCallback(new TweenCallback() {
+					@Override
+					public void onEvent(int type, BaseTween<?> source) {
+						state = STATE.CLEAR2;
+					}
+				});
+
+		notClear1 = timelines.createNotClear1() //
+				.setCallbackTriggers(TweenCallback.END) //
+				.setCallback(new TweenCallback() {
+					@Override
+					public void onEvent(int type, BaseTween<?> source) {
+						state = STATE.NOT_CLEAR2;
+					}
+				});
 
 		initCloud();
 
@@ -235,6 +260,7 @@ public class VsController {
 			if (statePlayer2 == STATE_PLAYER2.PLAYING) {
 				;
 			} else {
+
 				state = STATE.CLEAR3;
 				Timeline timeline = null;
 				if (timer > timerPlayer2) {
@@ -256,10 +282,12 @@ public class VsController {
 			if (statePlayer2 == STATE_PLAYER2.PLAYING) {
 				;
 			} else {
+
 				state = STATE.NOT_CLEAR3;
 				Timeline timeline = null;
 				if (statePlayer2 == STATE_PLAYER2.CLEAR) {
 					// 負け
+					main.kill();
 					timeline = timelines.createNotClear3(lose, 1.0f, 1.0f, 6.0f, 3.0f);
 				} else {
 					// 引き分け
@@ -332,29 +360,16 @@ public class VsController {
 
 		state = STATE.CLEAR1;
 
+		main.kill();
+		fire.kill();
+
 		Assets.instance.bulletEffect.allowCompletion();
 
 		Assets.instance.hitEffect.setPosition(x * Constants.VIEWPORT_GUI_WIDTH / Constants.VIEWPORT_WIDTH //
 		, y * Constants.VIEWPORT_GUI_HEIGHT / Constants.VIEWPORT_HEIGHT);
 		Assets.instance.hitEffect.start();
 
-		float x1 = dragonGame.getSprite().getX() + dragonGame.getSprite().getWidth() / 2.0f;
-		float y1 = dragonGame.getSprite().getY() + dragonGame.getSprite().getHeight() / 2.0f;
-
-		clear1 = timelines.createClear1(x1, y1);
-		clear1.setCallbackTriggers(TweenCallback.END);
-		clear1.setCallback(new TweenCallback() {
-			@Override
-			public void onEvent(int type, BaseTween<?> source) {
-				if (state == STATE.CLEAR1) {
-					state = STATE.CLEAR2;
-				}
-			}
-		});
 		clear1.start(tweenManager);
-
-		main.kill();
-		fire.kill();
 
 		String message = "hit:" + GaryouUtil.floatToString(timer);
 		webRtcResolver.sendMessage(message);
@@ -367,30 +382,35 @@ public class VsController {
 
 		Assets.instance.bulletEffect.allowCompletion();
 
-		notClear1 = timelines.createNotClear1();
-		notClear1.setCallbackTriggers(TweenCallback.END);
-		notClear1.setCallback(new TweenCallback() {
-			@Override
-			public void onEvent(int type, BaseTween<?> source) {
-				if (state == STATE.NOT_CLEAR1) {
-					state = STATE.NOT_CLEAR2;
-				}
-			}
-		});
 		notClear1.start(tweenManager);
 
 		String message = "nohit";
 		webRtcResolver.sendMessage(message);
-
 	}
 
 	private void updateEyePosition() {
 
-		float x = dragonGame.getSprite().getX();
-		float y = dragonGame.getSprite().getY();
-		float width = dragonGame.getSprite().getWidth();
-		float height = dragonGame.getSprite().getHeight();
-		eye.getSprite().setCenter(x + width / 2.0f - 1.44f, y + height / 2.0f + 3.5f);
+		float deg = dragonGame.getSprite().getRotation();
+
+		if (mode == MODE.HARD) {
+			deg = -deg - 22.363f;
+			float length = 3.78465f;
+
+			float x = dragonGame.getSprite().getX();
+			float y = dragonGame.getSprite().getY();
+			float width = dragonGame.getSprite().getWidth();
+			float height = dragonGame.getSprite().getHeight();
+
+			eye.getSprite().setCenter(x + width / 2.0f + length * MathUtils.sinDeg(deg) //
+			, y + height / 2.0f + length * MathUtils.cosDeg(deg));
+
+		} else {
+			float x = dragonGame.getSprite().getX();
+			float y = dragonGame.getSprite().getY();
+			float width = dragonGame.getSprite().getWidth();
+			float height = dragonGame.getSprite().getHeight();
+			eye.getSprite().setCenter(x + width / 2.0f - 1.44f, y + height / 2.0f + 3.5f);
+		}
 
 	}
 
@@ -425,7 +445,9 @@ public class VsController {
 		fire.setCallback(new TweenCallback() {
 			@Override
 			public void onEvent(int type, BaseTween<?> source) {
-				startNotClear();
+				if (state == STATE.MAIN || state == STATE.FIRE) {
+					startNotClear();
+				}
 			}
 		}).setCallbackTriggers(TweenCallback.END);
 
@@ -436,12 +458,13 @@ public class VsController {
 
 	}
 
-	public void startGame() {
+	public void startGame(int stage) {
 
 		state = STATE.MAIN;
+		mode = MODE.values()[stage];
 
 		timer = 30.0f;
-		main = timelines.createMain();
+		main = timelines.createMain(stage);
 		main.start(tweenManager);
 
 		timerPlayer2 = -1.0f;
@@ -477,20 +500,27 @@ public class VsController {
 
 	public void startPlayer2NoHit() {
 
-		if (firePlayer2 != null) {
-			firePlayer2.kill();
-		}
+		if (statePlayer2 == STATE_PLAYER2.PLAYING) {
+			if (firePlayer2 != null) {
+				firePlayer2.kill();
+			}
 
-		timelines.createPlayer2Hit().start(tweenManager);
-		statePlayer2 = STATE_PLAYER2.NOTCLEAR;
+			timelines.createPlayer2Hit().start(tweenManager);
+			statePlayer2 = STATE_PLAYER2.NOTCLEAR;
+		}
 	}
 
 	public void startRetry() {
-		webRtcResolver.sendMessage("retry");
-		init(true);
+
+		int stage = MathUtils.random(0, 2);
+
+		webRtcResolver.sendMessage("retry:" + stage);
+		init(true, stage);
 	}
 
-	public void startSync() {
+	public void startSync(final int stage) {
+
+		webRtcResolver.sendMessage("start:" + stage);
 
 		state = STATE.SYNC;
 
@@ -499,7 +529,7 @@ public class VsController {
 				.setCallback(new TweenCallback() {
 					@Override
 					public void onEvent(int type, BaseTween<?> source) {
-						startGame();
+						startGame(stage);
 					}
 				}) //
 				.start(tweenManager);

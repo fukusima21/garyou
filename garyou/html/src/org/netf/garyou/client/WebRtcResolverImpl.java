@@ -31,9 +31,8 @@ public class WebRtcResolverImpl implements WebRtcResolver {
 
 									$wnd.connection = conn;
 
-									if (data == 'start') {
+									if (data.indexOf('start:') > -1) {
 										@org.netf.garyou.client.HtmlLauncher::hideDialog()();
-										$wnd.connection.send('start');
 									}
 
 									@org.netf.garyou.client.HtmlLauncher::onRecv(Ljava/lang/String;)(data);
@@ -82,7 +81,8 @@ public class WebRtcResolverImpl implements WebRtcResolver {
 										$wnd.connection = $wnd.peer.connect(id);
 
 										$wnd.connection.on('open', function() {
-											$wnd.connection.send('start');
+											var stage = Math.floor( Math.random() * 2 );
+											$wnd.connection.send('start:' + stage);
 										});
 
 										$wnd.connection.on('data', function(data) {

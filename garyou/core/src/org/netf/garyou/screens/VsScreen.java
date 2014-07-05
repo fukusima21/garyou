@@ -16,8 +16,8 @@ public class VsScreen extends AbstractGameScreen implements WebRtcEvent {
 
 	private static final String TAG = MenuScreen.class.getName();
 
-	private VsRenderer finalRenderer;
-	private VsController finalController;
+	private VsRenderer vsRenderer;
+	private VsController vsController;
 	private OrthographicCamera camera;
 	private Vector3 touchPoint;
 
@@ -34,19 +34,19 @@ public class VsScreen extends AbstractGameScreen implements WebRtcEvent {
 	@Override
 	public void render(float deltaTime) {
 
-		finalController.update(deltaTime);
+		vsController.update(deltaTime);
 
 		Gdx.gl.glClearColor(0xe7 / 255.0f, 0xe3 / 255.0f, 0xc8 / 255.0f, 1.0f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		finalRenderer.render();
+		vsRenderer.render();
 
 	}
 
 	@Override
 	public void show() {
-		finalController = new VsController(game.webRtcResolver);
-		finalRenderer = new VsRenderer(finalController);
+		vsController = new VsController(game.webRtcResolver);
+		vsRenderer = new VsRenderer(vsController);
 		if (game.webRtcResolver != null) {
 			game.webRtcResolver.setWebRtcEvent(this);
 		}
@@ -55,20 +55,20 @@ public class VsScreen extends AbstractGameScreen implements WebRtcEvent {
 
 	@Override
 	public void hide() {
-		finalRenderer.dispose();
+		vsRenderer.dispose();
 	}
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
-		if (finalController.getState() == STATE.MAIN) {
+		if (vsController.getState() == STATE.MAIN) {
 			touchPoint.set(screenX, screenY, 0);
 			camera.unproject(touchPoint);
-			finalController.onFire(touchPoint);
+			vsController.onFire(touchPoint);
 		}
 
-		if (finalController.getState() == STATE.NOT_CLEAR3 //
-				|| finalController.getState() == STATE.CLEAR3) {
+		if (vsController.getState() == STATE.NOT_CLEAR3 //
+				|| vsController.getState() == STATE.CLEAR3) {
 			focus(screenX, screenY);
 		}
 
@@ -78,11 +78,11 @@ public class VsScreen extends AbstractGameScreen implements WebRtcEvent {
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 
-		if (finalController.getState() == STATE.NOT_CLEAR3 //
-				|| finalController.getState() == STATE.CLEAR3) {
+		if (vsController.getState() == STATE.NOT_CLEAR3 //
+				|| vsController.getState() == STATE.CLEAR3) {
 			focus(screenX, screenY);
-			if (finalController.retry.focused) {
-				finalController.startRetry();
+			if (vsController.retry.focused) {
+				vsController.startRetry();
 			}
 		}
 
@@ -92,8 +92,8 @@ public class VsScreen extends AbstractGameScreen implements WebRtcEvent {
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
 
-		if (finalController.getState() == STATE.NOT_CLEAR3 //
-				|| finalController.getState() == STATE.CLEAR3) {
+		if (vsController.getState() == STATE.NOT_CLEAR3 //
+				|| vsController.getState() == STATE.CLEAR3) {
 			focus(screenX, screenY);
 		}
 
@@ -102,16 +102,16 @@ public class VsScreen extends AbstractGameScreen implements WebRtcEvent {
 
 	private void focus(int screenX, int screenY) {
 
-		if (finalController.getState() == STATE.NOT_CLEAR3 //
-				|| finalController.getState() == STATE.CLEAR3) {
+		if (vsController.getState() == STATE.NOT_CLEAR3 //
+				|| vsController.getState() == STATE.CLEAR3) {
 
 			touchPoint.set(screenX, screenY, 0);
 			camera.unproject(touchPoint);
 
-			if (finalController.retry.isHit(touchPoint.x, touchPoint.y)) {
-				finalController.retry.focused = true;
+			if (vsController.retry.isHit(touchPoint.x, touchPoint.y)) {
+				vsController.retry.focused = true;
 			} else {
-				finalController.retry.focused = false;
+				vsController.retry.focused = false;
 			}
 
 		}
@@ -125,29 +125,35 @@ public class VsScreen extends AbstractGameScreen implements WebRtcEvent {
 			return;
 		}
 
-		if (s.equals("start")) {
-			finalController.startSync();
+		if (vsController.getState() == STATE.WAIT) {
+			if (s.startsWith("start:")) {
+				String[] split = s.split(":");
+				int stage = Integer.valueOf(split[1]);
+				vsController.startSync(stage);
+			}
 		}
 
 		if (s.startsWith("fire:")) {
 			String[] split = s.split(":");
 			float time = Float.valueOf(split[1]);
 			float rad = Float.valueOf(split[2]);
-			finalController.startPlayer2Fire(time, rad);
+			vsController.startPlayer2Fire(time, rad);
 		}
 
 		if (s.startsWith("hit:")) {
 			String[] split = s.split(":");
 			float time = Float.valueOf(split[1]);
-			finalController.startPlayer2Hit(time);
+			vsController.startPlayer2Hit(time);
 		}
 
 		if (s.startsWith("nohit")) {
-			finalController.startPlayer2NoHit();
+			vsController.startPlayer2NoHit();
 		}
 
-		if (s.equals("retry")) {
-			finalController.init(true);
+		if (s.startsWith("retry:")) {
+			String[] split = s.split(":");
+			int stage = Integer.valueOf(split[1]);
+			vsController.init(true, stage);
 		}
 
 	}

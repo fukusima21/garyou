@@ -6,8 +6,6 @@ import org.netf.garyou.game.objects.base.GameObject;
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
-import aurelienribon.tweenengine.equations.Back;
-import aurelienribon.tweenengine.equations.Bounce;
 import aurelienribon.tweenengine.equations.Cubic;
 import aurelienribon.tweenengine.equations.Linear;
 import aurelienribon.tweenengine.equations.Quad;
@@ -43,17 +41,46 @@ public class VsTimelines {
 		return timeline;
 	}
 
-	public Timeline createMain() {
+	public Timeline createMain(int stage) {
 
-		// 出現後、上下にゆれる
-		Timeline timeline = Timeline.createSequence() //
-				.push(Tween.set(controller.eye, GameObjectAccessor.COLOR).target(1.0f, 0.0f, 0.0f, 1.0f)) //
-				.push(Tween.set(controller.dragonGame, GameObjectAccessor.ROTATE).target(0.0f)) //
-				.push(Tween.set(controller.dragonGame, GameObjectAccessor.MOVE_SIZE).target(7.0f, 9.0f, 7.0f, 10.5f)) //
-				.push(Tween.to(controller.dragonGame, GameObjectAccessor.MOVE_SIZE, 1.0f).target(7.0f, 5.0f, 7.0f, 10.5f).ease(Quad.OUT)) //
-				.push(Tween.to(controller.dragonGame, GameObjectAccessor.MOVE_SIZE, 1.0f).target(7.0f, 15.0f, 7.0f, 10.5f).ease(Quad.INOUT)) //
-				.push(Tween.to(controller.dragonGame, GameObjectAccessor.MOVE_SIZE, 1.0f).target(7.0f, 9.0f, 7.0f, 10.5f).ease(Quad.OUT)) //
-				.repeat(-1, 0.0f); //
+		Timeline timeline = null;
+		controller.dragonGame.getSprite().setOrigin(3.5f, 5.25f);
+
+		switch (stage) {
+		case 0:
+			// 出現後、上下にゆれる
+			timeline = Timeline.createSequence() //
+					.push(Tween.set(controller.eye, GameObjectAccessor.COLOR).target(1.0f, 0.0f, 0.0f, 1.0f)) //
+					.push(Tween.set(controller.dragonGame, GameObjectAccessor.ROTATE).target(0.0f)) //
+					.push(Tween.set(controller.dragonGame, GameObjectAccessor.MOVE_SIZE).target(7.0f, 9.0f, 7.0f, 10.5f)) //
+					.push(Tween.to(controller.dragonGame, GameObjectAccessor.MOVE_SIZE, 1.0f).target(7.0f, 5.0f, 7.0f, 10.5f).ease(Quad.OUT)) //
+					.push(Tween.to(controller.dragonGame, GameObjectAccessor.MOVE_SIZE, 1.0f).target(7.0f, 15.0f, 7.0f, 10.5f).ease(Quad.INOUT)) //
+					.push(Tween.to(controller.dragonGame, GameObjectAccessor.MOVE_SIZE, 1.0f).target(7.0f, 9.0f, 7.0f, 10.5f).ease(Quad.OUT)) //
+					.repeat(-1, 0.0f); //
+			break;
+		case 1:
+			// 出現後、左右にゆれる
+			timeline = Timeline.createSequence() //
+					.push(Tween.set(controller.eye, GameObjectAccessor.COLOR).target(1.0f, 0.0f, 0.0f, 1.0f)) //
+					.push(Tween.set(controller.dragonGame, GameObjectAccessor.ROTATE).target(0.0f)) //
+					.push(Tween.set(controller.dragonGame, GameObjectAccessor.MOVE_SIZE).target(7.0f, 9.0f, 7.0f, 10.5f)) //
+					.push(Tween.to(controller.dragonGame, GameObjectAccessor.MOVE_SIZE, 3.0f).target(10.0f, 9.0f, 7.0f, 10.5f).ease(Sine.INOUT)) //
+					.push(Tween.to(controller.dragonGame, GameObjectAccessor.MOVE_SIZE, 6.0f).target(4.0f, 9.0f, 7.0f, 10.5f).ease(Sine.INOUT)) //
+					.push(Tween.to(controller.dragonGame, GameObjectAccessor.MOVE_SIZE, 3.0f).target(7.0f, 9.0f, 7.0f, 10.5f).ease(Sine.INOUT)) //
+					.repeat(-1, 0.0f); //
+			break;
+		case 2:
+			// 出現後、回転
+			timeline = Timeline.createSequence() //
+					.push(Tween.set(controller.eye, GameObjectAccessor.COLOR).target(1.0f, 0.0f, 0.0f, 1.0f)) //
+					.push(Tween.set(controller.dragonGame, GameObjectAccessor.MOVE_SIZE).target(7.0f, 9.0f, 7.0f, 10.5f)) //
+					.push(Tween.set(controller.dragonGame, GameObjectAccessor.ROTATE).target(0.0f)) //
+					.push(Tween.to(controller.dragonGame, GameObjectAccessor.ROTATE, 2.0f).target(360.0f).ease(Sine.INOUT)) //
+					.repeat(-1, 0.0f); //
+			break;
+		default:
+			break;
+		}
 
 		return timeline;
 	}
@@ -130,9 +157,9 @@ public class VsTimelines {
 				.push(Tween.to(controller.whiteBoard, GameObjectAccessor.MOVE, 0.5f).target(5.0f, 7.5f).ease(Quad.IN)) //
 				.push(Tween.set(controller.player1, GameObjectAccessor.MOVE_SIZE).target(5.0f, 5.0f, 1.5f, 2.0f)) //
 				.push(Tween.to(controller.player1, GameObjectAccessor.MOVE_SIZE, 0.5f).target(5.0f, 5.0f, 1.5f, 2.0f).ease(Quad.IN)) //
-				.beginParallel() //
 				.push(Tween.set(controller.retry, GameObjectAccessor.MOVE_SIZE).target(7.75f, 6.5f, 1.0f, 1.0f)) //
 				.push(Tween.set(result, GameObjectAccessor.MOVE_SIZE).target(5.0f, 8.0f, w1, h1)) //
+				.beginParallel() //
 				.push(Tween.to(controller.retry, GameObjectAccessor.MOVE_SIZE, 0.5f).target(7.75f, 6.5f, 4.0f, 1.75f).ease(Quad.IN)) //
 				.push(Tween.to(result, GameObjectAccessor.MOVE_SIZE, 0.5f).target(5.0f, 9.5f, w2, h2).ease(Quad.IN)) //
 				.end().repeat(0, 0.0f); //
@@ -140,18 +167,18 @@ public class VsTimelines {
 		return timeline;
 	}
 
-	public Timeline createClear1(float x1, float y1) {
+	public Timeline createClear1() {
 
 		Timeline timeline = Timeline.createSequence() //
-				.beginParallel() //
-				.push(Tween.set(controller.eye, GameObjectAccessor.COLOR).target(1.0f, 0.0f, 0.0f, 1.0f)) //
-				.push(Tween.set(controller.dragonGame, GameObjectAccessor.MOVE).target(x1, y1)) //
+				.push(Tween.set(controller.dragonGame, GameObjectAccessor.ALPHA).target(1.0f)) //
+				.push(Tween.set(controller.eye, GameObjectAccessor.ALPHA).target(1.0f)) //
 				.push(Tween.set(controller.player1, GameObjectAccessor.MOVE_SIZE_ALPHA).target(1.25f, 1.5f, 1.5f, 2.0f, 0.8f)) //
-				.push(Tween.to(controller.eye, GameObjectAccessor.COLOR, 0.5f).target(0.0f, 0.0f, 0.0f, 0.6f).ease(Quad.IN)) //
-				.push(Tween.to(controller.dragonGame, GameObjectAccessor.MOVE, 1.5f).target(x1, 15.0f + 5.25f).ease(Back.INOUT)) //
+				.beginParallel() //
+				.push(Tween.to(controller.dragonGame, GameObjectAccessor.ALPHA, 2.0f).target(0.3f).ease(Linear.INOUT)) //
+				.push(Tween.to(controller.eye, GameObjectAccessor.ALPHA, 2.0f).target(0.3f).ease(Linear.INOUT)) //
 				.push(Tween.to(controller.player1, GameObjectAccessor.MOVE_SIZE_ALPHA, 2.0f).target(11.5f, 1.5f, 1.5f, 2.0f, 0.8f).ease(Linear.INOUT)) //
 				.end() //
-				.repeat(0, 0.0f); //
+				.repeat(0, 0.0f).delay(0.2f);
 
 		return timeline;
 	}
@@ -163,9 +190,9 @@ public class VsTimelines {
 				.push(Tween.to(controller.whiteBoard, GameObjectAccessor.MOVE, 0.5f).target(5.0f, 7.5f).ease(Quad.IN)) //
 				.push(Tween.set(controller.player1, GameObjectAccessor.MOVE_SIZE).target(5.0f, 5.0f, 1.5f, 2.0f)) //
 				.push(Tween.to(controller.player1, GameObjectAccessor.MOVE_SIZE, 0.5f).target(5.0f, 5.0f, 1.5f, 2.0f).ease(Quad.IN)) //
-				.beginParallel() //
 				.push(Tween.set(controller.retry, GameObjectAccessor.MOVE_SIZE).target(7.75f, 6.5f, 1.0f, 1.0f)) //
 				.push(Tween.set(result, GameObjectAccessor.MOVE_SIZE).target(5.0f, 8.0f, w1, h1)) //
+				.beginParallel() //
 				.push(Tween.to(controller.retry, GameObjectAccessor.MOVE_SIZE, 0.5f).target(7.75f, 6.5f, 4.0f, 1.75f).ease(Quad.IN)) //
 				.push(Tween.to(result, GameObjectAccessor.MOVE_SIZE, 0.5f).target(5.0f, 9.5f, w2, h2).ease(Quad.IN)) //
 				.end().repeat(0, 0.0f); //
