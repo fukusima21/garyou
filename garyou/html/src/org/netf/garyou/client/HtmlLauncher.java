@@ -1,6 +1,8 @@
 package org.netf.garyou.client;
 
+import org.netf.garyou.WebRtcEvent;
 import org.netf.garyou.garyouMain;
+import org.netf.garyou.screens.MenuScreen;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
@@ -11,13 +13,23 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class HtmlLauncher extends GwtApplication {
 
 	static HtmlLauncher instance;
+
+	private WebRtcResolverImpl webRtcResolverImpl;
+	private garyouMain game;
 
 	@Override
 	public GwtApplicationConfiguration getConfig() {
@@ -42,7 +54,7 @@ public class HtmlLauncher extends GwtApplication {
 	public ApplicationListener getApplicationListener() {
 
 		instance = this;
-		setLogLevel(LOG_DEBUG);
+		setLogLevel(LOG_NONE);
 		setLoadingListener(new LoadingListener() {
 			@Override
 			public void beforeSetup() {
@@ -55,11 +67,12 @@ public class HtmlLauncher extends GwtApplication {
 			}
 		});
 
-		WebRtcResolverImpl webRtcResolver = new WebRtcResolverImpl();
+		webRtcResolverImpl = new WebRtcResolverImpl();
 
-		webRtcResolver.setup();
+		game = new garyouMain(webRtcResolverImpl);
 
-		return new garyouMain(webRtcResolver);
+		return game;
+
 	}
 
 	private void scaleCanvas() {
@@ -91,6 +104,11 @@ public class HtmlLauncher extends GwtApplication {
 		}
 	}
 
+	native void disconnect() /*-{
+								$wnd.connection.close();
+								$wnd.peer.disconnect();
+								}-*/;
+
 	native int getWindowInnerWidth() /*-{
 										return $wnd.innerWidth;
 										}-*/;
@@ -108,4 +126,56 @@ public class HtmlLauncher extends GwtApplication {
 		instance.scaleCanvas();
 	}
 
+	private static DialogBox dialogbox;
+
+	public static void showDialog(String id) {
+
+		String href = Window.Location.getHref();
+
+		String url = "http://garyou14.appspot.com/vs?" + id;
+
+		if (href.contains("/localhost")) {
+			url = "http://localhost:8080/html/vs?" + id;
+		}
+
+		dialogbox = new DialogBox(false);
+		dialogbox.setText("対決モード");
+
+		VerticalPanel dialogBoxContents = new VerticalPanel();
+		HTML message = new HTML("<center><br />" + "対戦者に以下のURLを送り、相手が接続するまでお待ちください。<br /><br />" + url + "<br />" + "<br /></center>");
+
+		Button button = new Button("キャンセルしてメニューへ", new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				dialogbox.hide();
+				instance.game.setScreen(new MenuScreen(instance.game));
+			}
+		});
+
+		SimplePanel holder = new SimplePanel();
+		holder.add(button);
+
+		dialogBoxContents.add(message);
+		dialogBoxContents.add(holder);
+		dialogbox.setWidget(dialogBoxContents);
+
+		dialogbox.center();
+
+	}
+
+	public static void hideDialog() {
+		dialogbox.hide();
+	}
+
+	public static void onRecv(String message) {
+
+		if (instance.webRtcResolverImpl != null) {
+			WebRtcEvent webRtcEvent = instance.webRtcResolverImpl.getWebRtcEvent();
+			if (webRtcEvent != null) {
+				webRtcEvent.onRecv(message);
+			}
+		}
+
+	}
 }
