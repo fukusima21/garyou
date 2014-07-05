@@ -79,7 +79,6 @@ project(":html") {
         compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
         compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
-        compile 'no.eirikb:gwt-channel-api:0.3'
     }
 }
 
@@ -88,10 +87,9 @@ project(":server") {
 
     dependencies {
         compile project(":html")
-        providedCompile 'javax.servlet:servlet-api:2.5'
+        compile 'javax.servlet:servlet-api:2.5'
+        compile 'javax.servlet:jsp-api:2.0'
         compile 'com.google.appengine:appengine-api-1.0-sdk:$appengineVersion'
-        compile 'no.eirikb:gwt-channel-api:0.3'
-        compile 'com.google.gwt:gwt-user:2.6.1'
     }
 
 }
