@@ -25,7 +25,6 @@ public class MenuController {
 	public GameObject normal;
 	public GameObject hard;
 	public GameObject circle;
-	public GameObject logo5jcup;
 	public GameObject bullet;
 
 	public GameObject asobikata;
@@ -69,8 +68,6 @@ public class MenuController {
 
 		circle = new GameObject(Assets.instance.circle, 2.0f, 2.0f, 4.0f, 4.0f, 0.5f);
 
-		logo5jcup = new GameObject(Assets.instance.logo5jcup, 1.5f, 16.5f, 3.0f, 3.0f);
-
 		asobikata = new GameObject(Assets.instance.asobikata, 5.0f, 19.5f, 6.0f, 9.0f, 1.0f);
 		asobikataBtn = new GameObject(Assets.instance.asobikataBtn, 8.0f, 3.0f, 3.0f, 1.5f);
 		bullet = new GameObject(Assets.instance.bullet, 2.0f + 1.25f, 3.0f + 3.25f, 0.5f, 0.5f, 0.5f);
@@ -90,7 +87,6 @@ public class MenuController {
 				.push(Tween.set(normal, GameObjectAccessor.SIZE_ALPHA).target(8.0f, 8.0f, 0.0f)) //
 				.push(Tween.set(hard, GameObjectAccessor.SIZE_ALPHA).target(8.0f, 8.0f, 0.0f)) //
 				.push(Tween.set(taiketsu, GameObjectAccessor.SIZE_ALPHA).target(8.0f, 8.0f, 0.0f)) //
-				.push(Tween.set(logo5jcup, GameObjectAccessor.MOVE).target(1.5f, 16.5f)) //
 				.push(Tween.to(ga, GameObjectAccessor.SIZE_ALPHA, 0.1f).target(2.0f, 2.0f, 1.0f).ease(Cubic.INOUT)) //
 				.push(Tween.to(ryou, GameObjectAccessor.SIZE_ALPHA, 0.1f).target(2.0f, 2.0f, 1.0f).ease(Cubic.INOUT)) //
 				.push(Tween.to(ten, GameObjectAccessor.SIZE_ALPHA, 0.1f).target(2.0f, 2.0f, 1.0f).ease(Cubic.INOUT)) //
@@ -100,7 +96,6 @@ public class MenuController {
 				.push(Tween.to(normal, GameObjectAccessor.SIZE_ALPHA, 0.2f).target(4.0f, 4.0f, 1.0f).ease(Cubic.INOUT)) //
 				.push(Tween.to(hard, GameObjectAccessor.SIZE_ALPHA, 0.2f).target(4.0f, 4.0f, 1.0f).ease(Cubic.INOUT)) //
 				.push(Tween.to(taiketsu, GameObjectAccessor.SIZE_ALPHA, 0.2f).target(4.0f, 2.0f, 1.0f).ease(Cubic.INOUT)) //
-				.push(Tween.to(logo5jcup, GameObjectAccessor.MOVE, 0.5f).target(1.5f, 13.5f).ease(Bounce.OUT)) //
 				.delay(0.5f).repeat(-1, 60.0f) //
 				.start(tweenManager);
 

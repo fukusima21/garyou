@@ -64,8 +64,6 @@ public class Assets implements Disposable, AssetErrorListener {
 	public Sprite white;
 	private Texture whiteTexture;
 
-	public Sprite logo5jcup;
-
 	public Sprite next;
 	public Sprite menu;
 	public Sprite retry;
@@ -180,8 +178,6 @@ public class Assets implements Disposable, AssetErrorListener {
 		whiteTexture = new Texture(whitePixmap);
 		white = new Sprite(whiteTexture);
 		whitePixmap.dispose();
-
-		logo5jcup = atlas.createSprite("logo_5jcup");
 
 		next = atlas.createSprite("next");
 		menu = atlas.createSprite("return");

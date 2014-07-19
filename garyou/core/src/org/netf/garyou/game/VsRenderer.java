@@ -293,6 +293,12 @@ public class VsRenderer implements Disposable {
 			Assets.instance.bitmapFont.draw(batch, timer2, 8.0f, 432.0f);
 		}
 
+		if (controller.getStatePlayer2() == STATE_PLAYER2.NOTCLEAR) {
+			Assets.instance.bitmapFont.setScale(0.8f);
+			Assets.instance.bitmapFont.setColor(1.0f, 0.0f, 0.0f, 0.5f);
+			Assets.instance.bitmapFont.draw(batch, "--.--", 8.0f, 432.0f);
+		}
+
 	}
 
 	private void renderBackground() {

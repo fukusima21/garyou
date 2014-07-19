@@ -38,7 +38,6 @@ public class MenuRenderer implements Disposable {
 
 		batch.begin();
 		menuController.moon.getSprite().draw(batch);
-		menuController.logo5jcup.getSprite().draw(batch);
 		menuController.ga.getSprite().draw(batch);
 		menuController.ryou.getSprite().draw(batch);
 		menuController.ten.getSprite().draw(batch);
